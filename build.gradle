@@ -32,6 +32,13 @@ repositories {
 	mavenCentral()
 }
 
+//чтобы при зборке добавилась node
+node {
+	// If true, it will download node using above parameters.
+	// If false, it will try to use globally installed node.
+	download = true
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
