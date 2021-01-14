@@ -11,6 +11,23 @@ group = 'nikolaiev.v.o'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
+//задание для yarn
+task builtFront(type: YarnTask) {
+	//yarn build
+	args = ['build']
+	// add the express package only
+	//yarn add express --dev
+	//args = ['add', 'express', '--dev']
+}
+
+//первое это yarn_cache_clean - очитка кеша
+//второе это yarn_install
+yarn_install.dependsOn(yarn_cache_clean)
+//третье builtFront - task для yarn
+builtFront.dependsOn(yarn_install)
+//четвертое processResources - сборка
+processResources.dependsOn(builtFront)
+
 repositories {
 	mavenCentral()
 }
