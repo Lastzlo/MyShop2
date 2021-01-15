@@ -96,20 +96,19 @@
 
                         <div>
                             <v-row>
-                                <v-col
+                                <!--<v-col
                                         class="pa-0"
                                         cols="8"
                                 >
                                     #таблица заполнения характеристик
-                                </v-col>
-                                <v-col
+                                </v-col>-->
+                                <!--<v-col
                                         class="pa-0"
                                         cols="4"
-                                >
+                                >-->
                                     #таблица заполнения тегов
                                     <directory-list :directoriesFromProduct="directoriesFromProduct"/>
-
-                                </v-col>
+                                <!--</v-col>-->
                             </v-row>
                         </div>
 
