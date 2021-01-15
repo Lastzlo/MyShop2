@@ -143,7 +143,7 @@ public class ProductService {
     //добавляем теги(директории) к товару
     private void addTegsToProduct (Product product) {
         //записываем спикос тегов которые пришли с товаром
-        Set<LinkedDirectory> directories = new HashSet<> (){{addAll (product.getDirectories ());}};
+        Set<LinkedDirectory> directories = new HashSet<LinkedDirectory> (){{addAll (product.getDirectories ());}};
         //очищаем список тегов
         product.getDirectories ().clear ();
         //проходим все теги которые пришли с товаром
@@ -273,7 +273,7 @@ public class ProductService {
     private void updateProductDirectories (Product product, Product productFromDb) {
 
         //теги товара который записан в бд
-        Set<LinkedDirectory> olddirectorysFromDb = new HashSet<> (){{
+        Set<LinkedDirectory> olddirectorysFromDb = new HashSet<LinkedDirectory> (){{
             addAll (productFromDb.getDirectories ());
         }};
 
@@ -479,7 +479,7 @@ public class ProductService {
 //                                    System.out.println ("directory имеет ("+directory.getProductsCount ()+") привязаных продуктов");
 
                                     //создаем копию чтобы можно было удалять элементы из сета directory.getRelatedDirectories ()
-                                    final Set<LinkedDirectory> directoryRelatedDirectoriesCopy = new HashSet<> () {{
+                                    final Set<LinkedDirectory> directoryRelatedDirectoriesCopy = new HashSet<LinkedDirectory> () {{
                                         addAll (directory.getRelatedDirectories ());
                                     }};
 

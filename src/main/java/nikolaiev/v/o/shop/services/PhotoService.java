@@ -34,7 +34,7 @@ public class PhotoService {
     private String unloadPath;
 
     //типы фото которые разрешено загружать
-    private Set<String> allowedFileTypes = new HashSet<> (){{
+    private Set<String> allowedFileTypes = new HashSet<String> (){{
         add ("image/png");
         add ("image/jpeg");
     }};
