@@ -33,7 +33,7 @@ repositories {
 	mavenCentral()
 }
 
-node {
+/*node {
 	//download = true
 	download = true
 	version = "12.13.1"
@@ -43,7 +43,7 @@ node {
 	workDir = project.file("${project.buildDir}/nodejs")
 	npmWorkDir = project.file("${project.buildDir}/npm")
 	yarnWorkDir = project.file("${project.buildDir}/yarn")
-}
+}*/
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
