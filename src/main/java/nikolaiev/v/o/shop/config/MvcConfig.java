@@ -13,22 +13,18 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration      //этот класс содержит конфигурацию нашего веб слоя
 public class MvcConfig implements WebMvcConfigurer {
     //путь для загрузки изображений на сервер
-    @Value("${upload.picture.path}")
-    private String uploadPath;
+    /*@Value("${upload.picture.path}")
+    private String uploadPath;*/
 
     //путь для выгрузки изображений с сервера
     @Value("${unload.picture.path}")
     private String unloadPath;
 
-    @Override
+    /*@Override
     public void addResourceHandlers (ResourceHandlerRegistry registry) {
         registry.addResourceHandler (unloadPath+"**")
                 .addResourceLocations ("file:/" + uploadPath + "/");
-    }
-
-//    public void addViewControllers (ViewControllerRegistry registry){
-//        registry.addViewController ("/setting").setViewName ("setting.html");
-//    }
+    }*/
 
 
 

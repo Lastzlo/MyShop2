@@ -39,8 +39,8 @@ public class ProductService {
     private PhotoService photoService;
 
     //путь для загрузки изображений на сервер
-    @Value("${upload.picture.path}")
-    private String uploadPath;
+    /*@Value("${upload.picture.path}")
+    private String uploadPath;*/
 
     //путь для выгрузки изображений с сервера
     @Value("${unload.picture.path}")
@@ -92,7 +92,7 @@ public class ProductService {
         //сохраняем файлы на сервере
         Set<Photo> photosSet = new HashSet<> ();
 
-        if(files.isPresent ()){
+        /*if(files.isPresent ()){
             final MultipartFile[] multipartFiles = files.get ();
 
             File uploadDir = new File (uploadPath);
@@ -136,7 +136,7 @@ public class ProductService {
                 photosSet.add (photo);
             }
 
-        }
+        }*/
         return photosSet;
     }
 

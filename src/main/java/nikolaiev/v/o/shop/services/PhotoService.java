@@ -26,8 +26,8 @@ public class PhotoService {
     private PhotoRepo photoRepo;
 
     //путь для загрузки изображений на сервер
-    @Value("${upload.picture.path}")
-    private String uploadPath;
+    /*@Value("${upload.picture.path}")
+    private String uploadPath;*/
 
     //путь для выгрузки изображений с сервера
     @Value("${unload.picture.path}")
@@ -45,7 +45,7 @@ public class PhotoService {
      * @param files список файлов
      * @return список файлов которые записаны в БД
      */
-    public Set<Photo> saveFiles (Optional<MultipartFile[]> files) {
+    /*public Set<Photo> saveFiles (Optional<MultipartFile[]> files) {
         //список фото которые записаны в БД
         Set <Photo> saveFileSet = new HashSet<> ();
 
@@ -99,6 +99,6 @@ public class PhotoService {
         }
 
         return saveFileSet;
-    }
+    }*/
 
 }
