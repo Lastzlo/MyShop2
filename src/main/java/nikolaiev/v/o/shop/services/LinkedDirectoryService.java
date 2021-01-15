@@ -98,6 +98,11 @@ public class LinkedDirectoryService {
                 child.setDirectoryType (DirectoryType.PARAMETER.toString ());
             }
 
+            //проверка что отец PARAMETER_LIST
+            if(fatherDirectoryType.equals (DirectoryType.PARAMETER.toString ())){
+                child.setDirectoryType (DirectoryType.PARAMETER_VALUE.toString ());
+            }
+
             child = directoryRepo.save (child);
 
             father.addChild (child);
