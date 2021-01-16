@@ -184,33 +184,8 @@ public class ProductService {
         });
     }
 
-    /**
-     * Связываем список директорий, с директорией
-     *
-     * @param inputDirectories список директорий
-     * @param directory директория
-     */
-    private void linkingDirectories (Set<LinkedDirectory> inputDirectories, LinkedDirectory directory) {
-        inputDirectories.forEach (inputDirectory -> {
-            //проверям что директория к которой хотим связать не такая же, а также ее тип PARAMETER или BRAND
-            if (
-                    directory != inputDirectory
-                            && (
-                            inputDirectory.getDirectoryType ()
-                                    .equals (DirectoryType.PARAMETER.toString ())
-                                    ||
-                                    inputDirectory.getDirectoryType ()
-                                            .equals (DirectoryType.BRAND.toString ()))
-            ) {
-
-                directory.addRelatedDirectory (inputDirectory);
-                directory.addRelatedDirectoryId (inputDirectory.getId ());
-
-            }
-        });
-    }
-
     //обновляет информацию о товаре и картинки
+
     public Product updateProduct (Product product, Optional<MultipartFile[]> files) {
         //проверка что такой товар есть в бд
         Optional<Product> optionalProductFromDb = productRepo.findById (product.getId ());
@@ -260,7 +235,6 @@ public class ProductService {
             return null;
         }
     }
-
 
 
 
@@ -364,7 +338,34 @@ public class ProductService {
     }
 
     /**
-     * Убирает у директорий oldNeededDirectories связи с директориями directorysToDeleteFromProduct
+     * Связать список директорий, с директорией
+     *
+     * @param inputDirectories список директорий
+     * @param directory директория
+     */
+    private void linkingDirectories (Set<LinkedDirectory> inputDirectories, LinkedDirectory directory) {
+        inputDirectories.forEach (inputDirectory -> {
+            //проверям что директория к которой хотим связать не такая же, а также ее тип PARAMETER или BRAND
+            if (
+                    directory != inputDirectory
+                            && (
+                            inputDirectory.getDirectoryType ()
+                                    .equals (DirectoryType.PARAMETER.toString ())
+                                    ||
+                                    inputDirectory.getDirectoryType ()
+                                            .equals (DirectoryType.BRAND.toString ()))
+            ) {
+
+                directory.addRelatedDirectory (inputDirectory);
+                directory.addRelatedDirectoryId (inputDirectory.getId ());
+
+            }
+        });
+    }
+
+
+    /**
+     * Убрать у директорий oldNeededDirectories связи с директориями directorysToDeleteFromProduct
      *
      * @param directorysToDeleteFromProduct
      * @param oldNeededDirectories
@@ -441,22 +442,24 @@ public class ProductService {
     }
 
     /**
-     * Удаляет товар с бд, и удаляет связи между тегами которые связывал данный товар
+     * Удалить товар с БД, и удалить связи между тегами которые связывали данный товар
      *
      * @param id идентификатор товара в бд
      */
     public void deleteProduct (Long id) {
-        //удаляет связи между тегами которые связывал данный товар
+        //1) удалить связи между тегами которые связывал данный товар
+        //проверка есть ли такой товар в БД
         productRepo.findById (id).ifPresent (
                 product -> {
+                    //пройти все директории этого товара
                     product.getDirectories ().forEach (
+                            //директория
                             directory -> {
-                                //удаляет связь тега с товаром
+                                //удалить связь директории с товаром
                                 directory.deleteProduct (product);
-                                //обновляем счетчик количества привязаных товаров к тегу
+                                //обновить счетчик количества привязаных товаров к тегу
                                 directory.setProductsCount ((long) directory.getProducts ().size ());
-
-                                //если счетчик количества привязаных товаров к тегу == 0 то убираем связи тега с другими тегами
+                                //если счетчик количества привязаных товаров к тегу == 0 то убрать связь директории с другими директории
                                 if(directory.getProductsCount () == 0){
 //                                    System.out.println ("directory не имеет привязаных продуктов, можно удалять связи с directory.getRelatedDirectories ()");
 
