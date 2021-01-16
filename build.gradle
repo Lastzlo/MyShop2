@@ -12,7 +12,7 @@ group = 'nikolaiev.v.o'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
-//задание для yarn
+/*//задание для yarn
 task builtFront(type: YarnTask) {
 	//yarn build
 	args = ['build']
@@ -24,7 +24,7 @@ yarn_install.dependsOn(yarn_cache_clean)
 //третье builtFront - task для yarn
 builtFront.dependsOn(yarn_install)
 //четвертое processResources - сборка
-processResources.dependsOn(builtFront)
+processResources.dependsOn(builtFront)*/
 
 repositories {
 	mavenCentral()
