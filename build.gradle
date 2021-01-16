@@ -16,9 +16,6 @@ sourceCompatibility = '1.8'
 task builtFront(type: YarnTask) {
 	//yarn build
 	args = ['build']
-	// add the express package only
-	//yarn add express --dev
-	//args = ['add', 'express', '--dev']
 }
 
 //первое это yarn_cache_clean - очитка кеша
@@ -33,8 +30,7 @@ repositories {
 	mavenCentral()
 }
 
-node {
-	//download = true
+/*node {
 	download = true
 	version = "12.13.1"
 	npmVersion = "6.9.0"
@@ -43,7 +39,7 @@ node {
 	workDir = project.file("${project.buildDir}/nodejs")
 	npmWorkDir = project.file("${project.buildDir}/npm")
 	yarnWorkDir = project.file("${project.buildDir}/yarn")
-}
+}*/
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
