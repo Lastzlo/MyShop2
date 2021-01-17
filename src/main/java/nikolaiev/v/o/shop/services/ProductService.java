@@ -442,94 +442,25 @@ public class ProductService {
     }
 
     /**
-     * Удалить товар с БД, и удалить связи между тегами которые связывали данный товар
+     * Удалить товар с БД
      *
      * @param id идентификатор товара в бд
      */
     public void deleteProduct (Long id) {
-        //1) удалить связи между тегами которые связывал данный товар
         //проверка есть ли такой товар в БД
         productRepo.findById (id).ifPresent (
                 product -> {
-                    //пройти все директории этого товара
+                    //удаляем связь директорий с продуктом
                     product.getDirectories ().forEach (
-                            //директория
                             directory -> {
-                                //удалить связь директории с товаром
+                                //удалить связь директории с продуктом
                                 directory.deleteProduct (product);
                                 //обновить счетчик количества привязаных товаров к тегу
                                 directory.setProductsCount ((long) directory.getProducts ().size ());
-                                //если счетчик количества привязаных товаров к тегу == 0 то убрать связь директории с другими директории
-                                if(directory.getProductsCount () == 0){
-//                                    System.out.println ("directory не имеет привязаных продуктов, можно удалять связи с directory.getRelatedDirectories ()");
 
-                                    directory.getRelatedDirectories ().forEach (
-                                            relatedDirectory -> {
-//                                                System.out.println ("//удалили directory с relatedDirectory");
-                                                relatedDirectory.getRelatedDirectories ().remove (directory);
-                                                relatedDirectory.getRelatedDirectoryIds ().remove (directory.getId ());
-
-                                                //обновляем relatedDirectory в бд
-                                                directoryRepo.save (relatedDirectory);
-                                            }
-                                    );
-
-                                    //очищаем directory.getRelatedDirectories ()
-                                    directory.getRelatedDirectories ().clear ();
-                                    directory.getRelatedDirectoryIds ().clear ();
-
-                                } else {
-//                                    System.out.println ("directory имеет ("+directory.getProductsCount ()+") привязаных продуктов");
-
-                                    //создаем копию чтобы можно было удалять элементы из сета directory.getRelatedDirectories ()
-                                    final Set<LinkedDirectory> directoryRelatedDirectoriesCopy = new HashSet<LinkedDirectory> () {{
-                                        addAll (directory.getRelatedDirectories ());
-                                    }};
-
-                                    directoryRelatedDirectoriesCopy.forEach (
-                                            relatedDirectory -> {
-                                                //встречаеться ли хоть один раз relatedDirectory в directory.getProducts ().product1.getDirectories
-                                                boolean isRelatedDirectoryInDirectoryProductsDirectories = false;
-
-                                                for (Product product1: directory.getProducts ()
-                                                ) {
-                                                    if(product1.getDirectories ().contains (relatedDirectory)){
-                                                        isRelatedDirectoryInDirectoryProductsDirectories = true;
-
-                                                        break;
-                                                    }
-                                                }
-
-                                                //встречаеться ли хоть один раз relatedDirectory в directory.getProducts ().product1.getDirectories
-                                                if(!isRelatedDirectoryInDirectoryProductsDirectories){
-//                                                    System.out.println ("!isRelatedDirectoryInDirectoryProductsDirectories");
-//                                                    System.out.println ("Нет, не встречаеться relatedDirectory в directory.getProducts ().product1.getDirectories");
-
-//                                                    System.out.println ("relatedDirectory = "+relatedDirectory);
-//                                                    System.out.println ("directory = "+directory);
-
-//                                                    System.out.println ("//удаляем directory с relatedDirectory");
-
-                                                    //удаляем directoryToDelete с oldNeededDirectoryId
-                                                    relatedDirectory.getRelatedDirectories ().remove (directory);
-                                                    relatedDirectory.getRelatedDirectoryIds ().remove (directory.getId ());
-
-                                                    //обновляем relatedDirectory в бд
-                                                    directoryRepo.save (relatedDirectory);
-
-//                                                    System.out.println ("//удаляем relatedDirectory с directory");
-                                                    //удаляем oldNeededDirectoryId с directoryToDelete
-                                                    directory.getRelatedDirectories ().remove (relatedDirectory);
-                                                    directory.getRelatedDirectoryIds ().remove (relatedDirectory.getId ());
-                                                } else {
-//                                                    System.out.println ("isRelatedDirectoryInDirectoryProductsDirectories");
-//                                                    System.out.println ("Да встречаеться relatedDirectory в directory.getProducts ().product1.getDirectories");
-                                                }
-
-                                            }
-                                    );
-
-                                }
+                                //проверить что у директории
+                                //не исчезла связь с другими директориями
+                                checkDirectory (directory, directoryRepo);
 
                                 //обновляем directory в бд
                                 directoryRepo.save (directory);
@@ -540,6 +471,128 @@ public class ProductService {
 
         //удалить товар с БД
         productRepo.deleteById(id);
+    }
+
+
+    /**
+     * Проверить что у директории не исчезла связь с другими директориями
+     *
+     * @param directory директорию которую нужно проверить
+     * @param directoryRepo ропизиторий для доступа к БД
+     */
+    public static void checkDirectory (LinkedDirectory directory, LinkedDirectoryRepo directoryRepo) {
+        //проверить что к директории привязанно 0 товаров
+        if(directory.getProductsCount () == 0){
+            /*значит у директории больше нет привязанных товаров
+
+            это значит что больше нет товаров которые могут
+            связать данную директорию с другими
+
+            это значит что нужно удалить свзь между
+            связанными директориями и директорией*/
+
+            //удалить связь директории с привязанными директориями
+            System.out.println ("directory не имеет привязаных продуктов, " +
+                    "удалить связи directory с directory.getRelatedDirectories ()");
+
+
+            directory.getRelatedDirectories ().forEach (
+                    relatedDirectory -> {
+                        //удалить связь привязаной директории relatedDirectory
+                        //с директорией directory
+                        System.out.println ("удалить directory с relatedDirectory");
+                        System.out.println ("relatedDirectory = "+relatedDirectory.getName ());
+                        System.out.println ("directory = "+directory.getName ());
+
+                        relatedDirectory.getRelatedDirectories ().remove (directory);
+                        relatedDirectory.getRelatedDirectoryIds ().remove (directory.getId ());
+
+                        //обновить привязаную директорию в БД
+                        directoryRepo.save (relatedDirectory);
+                    }
+            );
+
+            //очистить список привзаных директорий relatedDirectory
+            //к директории directory
+            directory.getRelatedDirectories ().clear ();
+            //очистить список их id
+            directory.getRelatedDirectoryIds ().clear ();
+
+        } else {
+            //значит у директории есть другие привязанные товары
+            System.out.println ("directory имеет ("
+                    +directory.getProductsCount ()+") привязаных продуктов");
+
+            //создать копию массива привязанных в директории директорий
+            //цель: избежать появления ошибки во время удаления элементов
+            final Set<LinkedDirectory>
+                    directoryRelatedDirectoriesCopy = new HashSet<LinkedDirectory> () {{
+                addAll (directory.getRelatedDirectories ());
+            }};
+
+
+            directoryRelatedDirectoriesCopy.forEach (
+                    relatedDirectory -> {
+
+                        /*переменная которая отвечает за результат
+                        встречаеться ли хоть один раз привязаная директория
+                        relatedDirectory в продукте product директории directory
+
+                        (перефразировал) есть ли еще один товар product
+                        который связывает directory и relatedDirectory*/
+                        boolean isRelatedDirectoryInDirectoryProduct = false;
+
+                        for (Product product1: directory.getProducts ()
+                        ) {
+                            //встречаеться ли хоть один раз привязаная директория relatedDirectory
+                            //в продукте product директории directory
+                            if(product1.getDirectories ().contains (relatedDirectory)){
+                                isRelatedDirectoryInDirectoryProduct = true;
+                                break;
+                            }
+                        }
+
+                        //встречаеться ли хоть один раз привязаная директория relatedDirectory
+                        //в продукте product директории directory
+                        if (isRelatedDirectoryInDirectoryProduct) {
+                            //значит что не нужно удалять связи
+                            System.out.println ("Да встречаеться relatedDirectory " +
+                                    "в directory.getProducts ().product1.getDirectories");
+                        } else {
+                            //одиночная очистка
+
+                            /*значит что нужно удалить связи между relatedDirectory
+                            и directory это тот случай когда у relatedDirectory
+                            и directory нет общих продуктов
+
+                            чтобы смоделировать данную ситуацию нужно создать продук с двумя директориями
+                            и продукт с одной из директорий
+                            */
+                            System.out.println ("Нет, не встречаеться relatedDirectory " +
+                                    "в directory.getProducts ().product1.getDirectories");
+
+                            System.out.println ("relatedDirectory = "+relatedDirectory);
+                            System.out.println ("directory = "+directory);
+
+                            System.out.println ("удаляем directory с relatedDirectory");
+
+                            //удалить directoryToDelete с oldNeededDirectoryId
+                            relatedDirectory.getRelatedDirectories ().remove (directory);
+                            relatedDirectory.getRelatedDirectoryIds ().remove (directory.getId ());
+
+                            System.out.println ("//удаляем relatedDirectory с directory");
+                            //удалить oldNeededDirectoryId с directoryToDelete
+                            directory.getRelatedDirectories ().remove (relatedDirectory);
+                            directory.getRelatedDirectoryIds ().remove (relatedDirectory.getId ());
+
+                            //обновить relatedDirectory в бд
+                            directoryRepo.save (relatedDirectory);
+                        }
+
+                    }
+            );
+
+        }
     }
 
 
