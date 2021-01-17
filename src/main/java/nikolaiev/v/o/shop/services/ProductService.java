@@ -466,6 +466,43 @@ public class ProductService {
                                 directoryRepo.save (directory);
                             }
                     );
+                    //очистить список
+                    //нет необходимости ведь удаляем product из бд
+                    //product.getDirectories ().clear ();
+
+                    //заготовка для удаления фото продукта
+                    /*//удаляем связь между продуктом и фотографиями
+
+                    //создать копию массива фотографий продукта
+                    //цель: после того как уберуться связи с продуктом, необходимо удалить фотографии
+                    final Set<Photo>
+                            productPhotosCopy = new HashSet<Photo> () {{
+                        addAll (.getPhotos ());
+                    }};
+
+                    //удалить свяproductзи
+                    product.getPhotos ().clear ();
+                    //зафиксировать в БД
+                    productRepo.save (product);
+
+                    //удалить фото
+                    productPhotosCopy.forEach (
+                            photo -> {
+                                photoRepo.findById (photo.getId ()).ifPresent (
+                                        item -> {
+                                            //удаление фото с БД
+                                            photoRepo.delete (item);
+
+                                            //удаление фото с хранилища
+                                            String uploadPath="C:/JavaProjects/other/forProjects/myshop1";
+                                            new File (uploadPath + "/" + item.getName ()).delete ();
+                                        }
+                                );
+                            }
+                    );
+                    //очистить список
+                    //нет необходимости ведь удаляем product из бд
+                    //product.getPhotos ().clear ();*/
                 }
         );
 
