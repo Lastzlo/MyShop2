@@ -23,7 +23,7 @@ public class MainControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    public void contexLoads() throws Exception {
+    public void contendLoads() throws Exception {
         this.mockMvc.perform(get("/"))       //выполнить гет запрос на "/"
                 .andDo(print())                       //вывести получ результат в консоль
                 .andExpect(status()

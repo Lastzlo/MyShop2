@@ -5,13 +5,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -36,11 +40,6 @@ public class ProductControllerTest {
     private ProductController controller;
 
     @Test
-    public void test(){
-        assertThat(controller).isNotNull();
-    }
-
-    @Test
     public void getAllProductsTest() throws Exception {
         String testJSONText = "[{\"id\":1,\"productName\":\"Apple iPhone 10\",\"productDiscription\":null,\"photos\":[],\"directories\":[],\"price\":null,\"creationDate\":null}]";
         this.mockMvc.perform(get("/product"))       //выполнить гет запрос на "/"
@@ -48,6 +47,28 @@ public class ProductControllerTest {
                 .andExpect (content().json (testJSONText, true));
     }
 
+    @Test
+    public void addProductTest() throws Exception {
+        String jsonRequestText = "{\"id\":null,\"productName\":\"Apple iPhone 10\",\"productDiscription\":null,\"photos\":[],\"directories\":[],\"price\":null,\"creationDate\":null}";
+
+        MockMultipartFile jsonFile = new MockMultipartFile (
+                "product",
+                "",
+                "application/json",
+                jsonRequestText.getBytes());
+
+        MockMultipartFile firstFile = new MockMultipartFile("files", "filename.txt", "text/plain", "some xml".getBytes());
+
+        String jsonResponseText = "{\"id\":10,\"productName\":\"Apple iPhone 10\",\"productDiscription\":null,\"photos\":[],\"directories\":[],\"price\":null}";
+
+        this.mockMvc.perform (MockMvcRequestBuilders.multipart ("/product")
+                    .file (jsonFile)
+                    .file (firstFile))
+                .andDo (print ())
+                .andExpect(status().isOk())
+                .andExpect(content().json (jsonResponseText));
+
+    }
 
 }
 
