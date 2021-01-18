@@ -12,7 +12,7 @@ group = 'nikolaiev.v.o'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
-/*//задание для yarn
+//задание для yarn
 task builtFront(type: YarnTask) {
 	//yarn build
 	args = ['build']
@@ -24,13 +24,13 @@ yarn_install.dependsOn(yarn_cache_clean)
 //третье builtFront - task для yarn
 builtFront.dependsOn(yarn_install)
 //четвертое processResources - сборка
-processResources.dependsOn(builtFront)*/
+processResources.dependsOn(builtFront)
 
 repositories {
 	mavenCentral()
 }
 
-/*node {
+node {
 	download = true
 	version = "12.13.1"
 	npmVersion = "6.9.0"
@@ -39,7 +39,7 @@ repositories {
 	workDir = project.file("${project.buildDir}/nodejs")
 	npmWorkDir = project.file("${project.buildDir}/npm")
 	yarnWorkDir = project.file("${project.buildDir}/yarn")
-}*/
+}
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
