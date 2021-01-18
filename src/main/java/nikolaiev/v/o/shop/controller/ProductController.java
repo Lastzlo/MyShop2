@@ -34,11 +34,6 @@ public class ProductController {
         return productService.saveProduct(product, files);
     }
 
-    @DeleteMapping("{id}")
-    public void delete(@PathVariable String id){
-        productService.deleteProduct(Long.valueOf(id));
-    }
-
 
     @PutMapping
     @JsonView(Views.FullMessage.class)
@@ -47,6 +42,11 @@ public class ProductController {
             @RequestPart(value = "product") Product product
     ){
         return productService.updateProduct(product, files);
+    }
+
+    @DeleteMapping("{id}")
+    public void delete(@PathVariable String id){
+        productService.deleteProduct(Long.valueOf(id));
     }
 
 }
