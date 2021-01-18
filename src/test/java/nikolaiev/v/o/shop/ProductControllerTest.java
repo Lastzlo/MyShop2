@@ -42,21 +42,11 @@ public class ProductControllerTest {
 
     @Test
     public void getAllProductsTest() throws Exception {
-        String testJSONText = "[{" +
-                "\"id\":1," +
-                "\"productName\":\"Apple iPhone 10\"," +
-                "\"productDiscription\":\"\"," +
-                "\"photos\":[]," +
-                "\"directories\":[]," +
-                "\"price\":\"\"," +
-                "\"creationDate\":\"\"" +
-                "}]";
+        String testJSONText = "[{\"id\":1,\"productName\":\"Apple iPhone 10\",\"productDiscription\":null,\"photos\":[],\"directories\":[],\"price\":null,\"creationDate\":null}]";
         this.mockMvc.perform(get("/product"))       //выполнить гет запрос на "/"
-                .andDo(print());                             //вывести полученый результат в консоль
-                //.andExpect (content().json (testJSONText));
+                .andDo(print())                            //вывести полученый результат в консоль
+                .andExpect (content().json (testJSONText, true));
     }
-
-
 
 
 }
