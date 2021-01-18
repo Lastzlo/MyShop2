@@ -51,4 +51,11 @@ public class ProductTest {
                 .andExpect (content().json ("[{\"id\":10,\"productName\":\"Apple Iphone 8\",\"productDiscription\":\"\",\"photos\":[],\"directories\":[{\"id\":6,\"name\":\"ios\",\"directoryType\":\"PARAMETER\",\"children\":[],\"relatedDirectoryIds\":[],\"productsCount\":1}],\"price\":\"\",\"creationDate\":\"2021-01-18 14:05:03\"}]"));
     }
 
+    @Test
+    public void notFoundSettingPage() throws Exception {
+        this.mockMvc.perform (get ("/setting"))
+                .andDo (print ())
+                .andExpect (status ().isNotFound ());
+    }
+
 }
