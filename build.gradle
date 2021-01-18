@@ -12,7 +12,8 @@ group = 'nikolaiev.v.o'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
-//задание для yarn
+//установить yarn и node
+/*//задание для yarn
 task builtFront(type: YarnTask) {
 	//yarn build
 	args = ['build']
@@ -26,10 +27,6 @@ builtFront.dependsOn(yarn_install)
 //четвертое processResources - сборка
 processResources.dependsOn(builtFront)
 
-repositories {
-	mavenCentral()
-}
-
 node {
 	download = true
 	version = "12.13.1"
@@ -39,6 +36,10 @@ node {
 	workDir = project.file("${project.buildDir}/nodejs")
 	npmWorkDir = project.file("${project.buildDir}/npm")
 	yarnWorkDir = project.file("${project.buildDir}/yarn")
+}*/
+
+repositories {
+	mavenCentral()
 }
 
 dependencies {
