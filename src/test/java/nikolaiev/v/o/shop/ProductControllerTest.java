@@ -23,7 +23,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 //аннотация указывает на новый файл с настройками
 @TestPropertySource("/application-test.properties")
-@Sql(value = {})
+//перед тестом выполнить очистку и заполнение БД
+@Sql(value = {"create-product-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+//после теста выполнить очистку БД
+@Sql(value = {"create-product-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class ProductControllerTest {
 
     @Autowired
@@ -50,3 +53,5 @@ public class ProductControllerTest {
 
 
 }
+
+
