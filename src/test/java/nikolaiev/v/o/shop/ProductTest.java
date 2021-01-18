@@ -42,4 +42,13 @@ public class ProductTest {
                         .string(containsString("MyShop")));
     }
 
+    @Test
+    public void getAllProductsTest() throws Exception {
+        this.mockMvc.perform(get("/product"))       //выполнить гет запрос на "/"
+                .andDo(print())                       //вывести получ результат в консоль
+                .andExpect(status()
+                        .isOk())           //ожидать статус 200
+                .andExpect (content().json ("[{\"id\":10,\"productName\":\"Apple Iphone 8\",\"productDiscription\":\"\",\"photos\":[],\"directories\":[{\"id\":6,\"name\":\"ios\",\"directoryType\":\"PARAMETER\",\"children\":[],\"relatedDirectoryIds\":[],\"productsCount\":1}],\"price\":\"\",\"creationDate\":\"2021-01-18 14:05:03\"}]"));
+    }
+
 }
