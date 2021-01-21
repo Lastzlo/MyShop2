@@ -27,10 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 //аннотация указывает на новый файл с настройками
 @TestPropertySource("/application-test.properties")
-//перед тестом выполнить очистку и заполнение БД
-@Sql(value = {"/create-product-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-//после теста выполнить очистку БД
-@Sql(value = {"/create-product-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class ProductControllerTest {
 
     @Autowired
@@ -40,6 +36,10 @@ public class ProductControllerTest {
     private ProductController controller;
 
     @Test
+    //перед тестом выполнить очистку и заполнение БД
+    @Sql(value = {"/create-product-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    //после теста выполнить очистку БД
+    @Sql(value = {"/create-product-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void getAllProductsTest() throws Exception {
         String testJSONText = "[{\"id\":1,\"productName\":\"Apple iPhone 10\",\"productDiscription\":null,\"photos\":[],\"directories\":[],\"price\":null,\"creationDate\":null}]";
         this.mockMvc.perform(get("/product"))       //выполнить гет запрос на "/"
@@ -48,6 +48,10 @@ public class ProductControllerTest {
     }
 
     @Test
+    //перед тестом выполнить очистку и заполнение БД
+    @Sql(value = {"/create-product-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    //после теста выполнить очистку БД
+    @Sql(value = {"/create-product-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void addProductTest() throws Exception {
         String jsonRequestText = "{\"id\":null,\"productName\":\"Apple iPhone 10\",\"productDiscription\":null,\"photos\":[],\"directories\":[],\"price\":null,\"creationDate\":null}";
 
