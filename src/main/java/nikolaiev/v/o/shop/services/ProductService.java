@@ -190,7 +190,6 @@ public class ProductService {
     }
 
     //обновляет информацию о товаре и картинки
-
     public Product updateProduct (Product product, Optional<MultipartFile[]> files) {
         //проверка что такой товар есть в бд
         Optional<Product> optionalProductFromDb = productRepo.findById (product.getId ());
@@ -241,8 +240,6 @@ public class ProductService {
         }
     }
 
-
-
     /**
      * Теги полученого товара устонавливает товару который хранился в бд
      *
@@ -250,7 +247,6 @@ public class ProductService {
      * @param productFromDb товар который хранился в бд
      */
     private void updateProductDirectories (Product product, Product productFromDb) {
-
         //теги товара который записан в бд
         Set<LinkedDirectory> olddirectorysFromDb = new HashSet<LinkedDirectory> (){{
             addAll (productFromDb.getDirectories ());
@@ -342,7 +338,6 @@ public class ProductService {
 
     }
 
-
     /**
      * Удалить товар с БД
      *
@@ -382,7 +377,7 @@ public class ProductService {
                         addAll (.getPhotos ());
                     }};
 
-                    //удалить свяproductзи
+                    //удалить связи
                     product.getPhotos ().clear ();
                     //зафиксировать в БД
                     productRepo.save (product);
@@ -411,8 +406,6 @@ public class ProductService {
         //удалить товар с БД
         productRepo.deleteById(id);
     }
-
-
 
 
 }
