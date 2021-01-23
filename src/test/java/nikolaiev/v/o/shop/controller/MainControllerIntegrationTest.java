@@ -1,4 +1,4 @@
-package nikolaiev.v.o.shop;
+package nikolaiev.v.o.shop.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 //классов поторая подменяет слой MVC
 //все будет проходить в фейковом окружении
 @AutoConfigureMockMvc
-public class MainControllerTest {
+public class MainControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
