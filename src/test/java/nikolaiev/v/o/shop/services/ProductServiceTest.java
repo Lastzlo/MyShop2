@@ -11,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Optional;
 
 @SpringBootTest
@@ -28,7 +30,15 @@ class ProductServiceTest {
     @Test
     void saveProduct () {
         //Подготовленные данные
-        Product product = new Product ();
+        Product product = new Product (){{
+            this.setId ((long) 0);
+            this.setProductName ("no name");
+            this.setProductDiscription ("no productDiscription");
+            this.setPhotos (new HashSet<> ());
+            this.setDirectories (new HashSet<> ());
+        }};
+
+
         Optional<MultipartFile[]> files = Optional.empty ();
 
         // Setup mock scenario
