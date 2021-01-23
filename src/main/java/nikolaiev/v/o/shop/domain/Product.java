@@ -126,4 +126,7 @@ public class Product {
         return photoToDelete;
     }
 
+    public void setPhotoToDelete (Set<Photo> photoToDelete) {
+        this.photoToDelete = photoToDelete;
+    }
 }
