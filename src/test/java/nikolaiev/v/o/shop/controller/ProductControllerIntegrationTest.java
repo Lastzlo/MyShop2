@@ -1,4 +1,4 @@
-package nikolaiev.v.o.shop;
+package nikolaiev.v.o.shop.controller;
 
 import nikolaiev.v.o.shop.controller.ProductController;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 //аннотация указывает на новый файл с настройками
 @TestPropertySource("/application-test.properties")
-public class ProductControllerTest {
+public class ProductControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
