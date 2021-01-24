@@ -29,30 +29,23 @@ class ProductServiceTest {
 
     @Test
     void saveProduct () {
-        //Подготовленные данные
-        Product product = new Product (){{
+        //given
+        Product expectedProduct = new Product (){{
             this.setId ((long) 0);
             this.setProductName ("no name");
             this.setProductDiscription ("no productDiscription");
             this.setPhotos (new HashSet<> ());
             this.setDirectories (new HashSet<> ());
         }};
-
-
         Optional<MultipartFile[]> files = Optional.empty ();
+        // Setup mock scenari
+        Mockito.when (productRepo.save (expectedProduct))
+                .thenReturn (expectedProduct);
 
-        // Setup mock scenario
-        Mockito.when (productRepo.save (product)).thenReturn (product);
+        //when
+        final Product actualProduct = productService.saveProduct (expectedProduct, files);
 
-        //Результат метода
-        final Product resultProduct = productService.saveProduct (product, files);
-
-        //ожидаемый результат
-        final Product expectedProduct = product;
-        //актуальны результат
-        final Product actualProduct = resultProduct;
-
-        //условие которое проверяет тест
+        //then
         Assertions.assertEquals (expectedProduct, actualProduct);
     }
 }
