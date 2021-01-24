@@ -46,7 +46,8 @@ class ProductServiceTest {
         final Product actualProduct = productService.saveProduct (expectedProduct, files);
 
         //then
-        Assertions.assertEquals (expectedProduct, actualProduct);
+        Assertions.assertEquals (expectedProduct, actualProduct, "expectedProduct and actualProduct should be equal");
+        Assertions.assertNotNull (expectedProduct.getCreationDate (), "expectedProduct.getCreationDate () should be not Null");
     }
 }
 
