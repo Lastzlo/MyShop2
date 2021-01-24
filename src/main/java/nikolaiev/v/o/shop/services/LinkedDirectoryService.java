@@ -306,4 +306,30 @@ public class LinkedDirectoryService {
         }
     }
 
+    /**
+     * Добавить директории из БД к товару
+     * @param directories директории
+     * @param product товар
+     */
+    public void addDirectoriesToProduct (Set<LinkedDirectory> directories,Product product) {
+        //копия списка директорий
+        Set<LinkedDirectory> productDirectories = new HashSet<LinkedDirectory>(){{addAll (directories);}};
+        //очистить список директорий товара
+        product.getDirectories ().clear ();
+        //добавить к товару директории с БД
+        productDirectories.forEach (directory -> {
+                    //искать директорию в БД
+                    this.directoryRepo.findById (directory.getId ()).ifPresent (
+                            directoryFromDb -> {
+                                //добавляем к тег товару
+                                product.addDirectory (directoryFromDb);
+                            }
+                    );
+                }
+        );
+
+    }
+
+
+
 }

@@ -66,8 +66,8 @@ public class ProductService {
         /*//добавляем фото к товару
         addPhotosToProduct (product, files);*/
 
-        //добавляем теги(директории) к товару
-        addTegsToProduct (product);
+        //добавить директории к товару
+        directoryService.addDirectoriesToProduct(product.getDirectories (), product);
 
         //устонавливаем время добавления
         product.setCreationDate (LocalDateTime.now ());
@@ -143,26 +143,6 @@ public class ProductService {
 
         }*/
         return photosSet;
-    }
-
-    //добавляем теги(директории) к товару
-    private void addTegsToProduct (Product product) {
-        //записываем спикос тегов которые пришли с товаром
-        Set<LinkedDirectory> directories = new HashSet<LinkedDirectory>(){{addAll (product.getDirectories ());}};
-        //очищаем список тегов
-        product.getDirectories ().clear ();
-        //проходим все теги которые пришли с товаром
-        directories.forEach (directory -> {
-                    //ести тег есть в бд
-                    this.directoryRepo.findById (directory.getId ()).ifPresent (
-                            directoryFromDb -> {
-                                //добавляем к тег товару
-                                product.addDirectory (directoryFromDb);
-                            }
-                    );
-                }
-        );
-
     }
 
     //добавляем товар из бд к тегам(директориям)
