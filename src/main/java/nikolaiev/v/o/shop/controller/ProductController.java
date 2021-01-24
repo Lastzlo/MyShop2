@@ -27,7 +27,7 @@ public class ProductController {
     //принимает FormData который состоит из Файлов и JSON
     @PostMapping
     @JsonView(Views.FullMessage.class)
-    private Product create(
+    public Product create(
             @RequestPart(value = "files") Optional<MultipartFile[]> files,
             @RequestPart(value = "product") Product product
     ){
@@ -37,7 +37,7 @@ public class ProductController {
 
     @PutMapping
     @JsonView(Views.FullMessage.class)
-    private Product update(
+    public Product update(
             @RequestPart(value = "files") Optional<MultipartFile[]> files,
             @RequestPart(value = "product") Product product
     ){
