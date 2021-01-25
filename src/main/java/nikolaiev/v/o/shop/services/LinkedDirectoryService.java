@@ -28,7 +28,7 @@ public class LinkedDirectoryService {
         //если директория не найдена то создаеться
         if (directory==null){
             //создает директорию
-            directory = new LinkedDirectory (DirectoryType.CATEGORY_LIST.toString ());
+            directory = new LinkedDirectory (DirectoryType.CATEGORY_LIST);
 
             directory = directoryRepo.save (directory);
         }
@@ -58,6 +58,7 @@ public class LinkedDirectoryService {
 
         LinkedDirectory child = linkedDirectory;
 
+        //нужна нормальна обработка в виде Optional
         if(father!=null){
             String fatherDirectoryType = father.getDirectoryType ();
 
@@ -72,14 +73,14 @@ public class LinkedDirectoryService {
                 //добавляем в него дочернюю директорию Бренды
                 LinkedDirectory brandList = new LinkedDirectory (
 
-                        DirectoryType.BRAND_LIST.toString ()
+                        DirectoryType.BRAND_LIST
                 );
                 brandList.setFather (child);
                 brandList = directoryRepo.save (brandList);
 
                 //добавляем в него дочернюю директорию Параметры
                 LinkedDirectory parameterList = new LinkedDirectory (
-                        DirectoryType.PARAMETER_LIST.toString ()
+                        DirectoryType.PARAMETER_LIST
                 );
                 parameterList.setFather (child);
                 parameterList = directoryRepo.save (parameterList);

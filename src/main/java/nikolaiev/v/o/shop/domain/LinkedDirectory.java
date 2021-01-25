@@ -22,8 +22,6 @@ public class LinkedDirectory {
     @JsonView(Views.Type.class)
     private String directoryType;
 
-
-
     //подкатегории
     @OneToMany
     @JsonView(Views.OnlyChild.class)
@@ -44,7 +42,7 @@ public class LinkedDirectory {
     @Column(name = "related_directory")
     //передаеться в файле ответа JSON, вместо relatedDirectories, для того чтобы не столкнуться с рекурсией
     @JsonView(Views.FullLinkedDirectory.class)
-    private Set<Long> relatedDirectoryIds = new HashSet<>();
+    private Set<Long> relatedDirectoryIds;
 
     //надкатегория, ссылка на директории высшую на один уровень
     @ManyToOne
@@ -61,13 +59,32 @@ public class LinkedDirectory {
 
 
     public LinkedDirectory () {
+        this.id = 0l;
+        this.name = "name";
+        this.directoryType = "directoryType";
+        this.children = new HashSet<> ();
+        this.relatedDirectories = new HashSet<> ();
+        this.relatedDirectoryIds = new HashSet<> ();
+        this.father = null;
+        this.products = new HashSet<> ();
+        this.productsCount = 0l;
     }
 
-    //для создания категории с предустановленым именем и типом
-    public LinkedDirectory (String directoryType) {
-        this.name = directoryType;
-        this.directoryType = directoryType;
+
+    /**
+     * Создать директориию у которой тип и имя одинаковые
+     * @param directoryType тип категории
+     */
+    public LinkedDirectory (Enum<DirectoryType> directoryType) {
+        this.id = 0l;
+        this.name = directoryType.toString ();
+        this.directoryType = directoryType.toString ();
         this.children = new HashSet<> ();
+        this.relatedDirectories = new HashSet<> ();
+        this.relatedDirectoryIds = new HashSet<> ();
+        this.father = null;
+        this.products = new HashSet<> ();
+        this.productsCount = 0l;
     }
 
     public Long getId () {
