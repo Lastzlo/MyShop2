@@ -24,7 +24,11 @@ public class LinkedDirectoryUtils {
                                     .equals (DirectoryType.PARAMETER.toString ())
                                     ||
                                     inputDirectory.getDirectoryType ()
+                                            .equals (DirectoryType.PARAMETER_VALUE.toString ())
+                                    ||
+                                    inputDirectory.getDirectoryType ()
                                             .equals (DirectoryType.BRAND.toString ()))
+
             ) {
 
                 directory.addRelatedDirectory (inputDirectory);
