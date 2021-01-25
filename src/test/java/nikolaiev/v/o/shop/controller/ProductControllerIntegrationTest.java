@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
@@ -17,12 +18,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
 //Спринг пытаеться автоматически создать структуру
@@ -45,10 +47,25 @@ public class ProductControllerIntegrationTest {
     //после теста выполнить очистку БД
     @Sql(value = {"/create-product-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void getAllProductsTest() throws Exception {
-        String testJSONText = "[{\"id\":1,\"productName\":\"Apple iPhone 10\",\"productDiscription\":null,\"photos\":[],\"directories\":[],\"price\":null,\"creationDate\":null}]";
-        this.mockMvc.perform(get("/product"))       //выполнить гет запрос на "/"
+        // Execute the GET request
+        this.mockMvc.perform(get("/product"))
                 .andDo(print())                            //вывести полученый результат в консоль
-                .andExpect (content().json (testJSONText, true));
+                // Validate the response code and content type
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+
+                // Validate headers
+                .andExpect(header().string(HttpHeaders.LOCATION, "/product"))
+
+                // Validate the returned fields
+                .andExpect (jsonPath ("$", hasSize (1)))
+                .andExpect (jsonPath ("$[0].id", is(1)))
+                .andExpect (jsonPath ("$[0].productName", is("Apple iPhone 10")))
+                .andExpect (jsonPath ("$[0].productDiscription", nullValue ()))
+                .andExpect (jsonPath ("$[0].photos", hasSize (0)))
+                .andExpect (jsonPath ("$[0].directories", hasSize (0)))
+                .andExpect (jsonPath ("$[0].price", nullValue ()))
+                .andExpect (jsonPath ("$[0].creationDate", nullValue ()));
     }
 
     @Test
