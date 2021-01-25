@@ -1,6 +1,11 @@
 package nikolaiev.v.o.shop.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import nikolaiev.v.o.shop.controller.ProductController;
+import nikolaiev.v.o.shop.domain.Product;
+import org.assertj.core.api.Assertions;
+import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,9 +22,13 @@ import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequ
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
+import java.io.File;
+import java.util.HashSet;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.StringContains.containsString;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -34,6 +43,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 //аннотация указывает на новый файл с настройками
 @TestPropertySource("/application-test.properties")
 public class ProductControllerIntegrationTest {
+    @Autowired
+    private ObjectMapper objectMapper;
+
 
     @Autowired
     private MockMvc mockMvc;
@@ -74,26 +86,48 @@ public class ProductControllerIntegrationTest {
     //после теста выполнить очистку БД
     @Sql(value = {"/create-product-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void addProductTest() throws Exception {
-        String jsonRequestText = "{\"id\":null,\"productName\":\"Xiaomi mi 5\",\"productDiscription\":null,\"photos\":[],\"directories\":[],\"price\":null,\"creationDate\":null}";
+
+        Product productToPost = new Product (){{
+            this.setProductName ("Xiaomi mi 5");
+            this.setPhotos (new HashSet<> ());
+            this.setDirectories (new HashSet<> ());
+        }};
+        byte[] productToPostAsBytes = objectMapper.writeValueAsBytes (productToPost);
 
         MockMultipartFile jsonFile = new MockMultipartFile (
                 "product",
                 "",
                 "application/json",
-                jsonRequestText.getBytes());
+                productToPostAsBytes);
 
-        MockMultipartFile firstFile = new MockMultipartFile("files", "filename.txt", "text/plain", "some xml".getBytes());
+        MockMultipartFile firstFile = new MockMultipartFile(
+                "files",
+                "filename.txt",
+                "text/plain",
+                "some xml".getBytes());
 
-        String jsonResponseText = "{\"id\":10,\"productName\":\"Xiaomi mi 5\",\"productDiscription\":null,\"photos\":[],\"directories\":[],\"price\":null}";
 
-        this.mockMvc.perform (MockMvcRequestBuilders.multipart ("/product")
-                    .file (jsonFile)
-                    .file (firstFile))
+        String resultJson= this.mockMvc.perform (MockMvcRequestBuilders.multipart ("/product")
+                .file (jsonFile)
+                .file (firstFile))
                 .andDo (print ())
+                // Validate the response code and content type
                 .andExpect(status().isOk())
-                .andExpect(content().json (jsonResponseText));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
 
+                // Validate headers
+                .andExpect(header().string(HttpHeaders.LOCATION, "/product"))
+                .andReturn ().getResponse ().getContentAsString ();
+
+        Product resultProduct = objectMapper.readValue(resultJson, Product.class);
+
+        assertEquals (10l, resultProduct.getId ());
+        assertEquals (productToPost.getProductName (), resultProduct.getProductName ());
+        assertEquals (productToPost.getPhotos (), resultProduct.getPhotos ());
+        assertEquals (productToPost.getDirectories (), resultProduct.getDirectories ());
+        assertNotNull (resultProduct.getCreationDate ());
     }
+
 
     @Test
     //перед тестом выполнить очистку и заполнение БД
