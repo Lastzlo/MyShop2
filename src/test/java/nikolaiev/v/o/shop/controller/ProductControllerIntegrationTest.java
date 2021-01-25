@@ -58,7 +58,7 @@ public class ProductControllerIntegrationTest {
     @Sql(value = {"/create-product-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     //после теста выполнить очистку БД
     @Sql(value = {"/create-product-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void getAllProductsTest() throws Exception {
+    public void getAllProducts() throws Exception {
         // Execute the GET request
         this.mockMvc.perform(get("/product"))
                 //вывести результат в консоль
@@ -86,7 +86,7 @@ public class ProductControllerIntegrationTest {
     @Sql(value = {"/create-product-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     //после теста выполнить очистку БД
     @Sql(value = {"/create-product-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void addProductTest() throws Exception {
+    public void addProduct() throws Exception {
 
         Product productToPost = new Product (){{
             this.setProductName ("Xiaomi mi 5");
@@ -141,7 +141,7 @@ public class ProductControllerIntegrationTest {
     @Sql(value = {"/create-product-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     //после теста выполнить очистку БД
     @Sql(value = {"/create-product-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void updateProductTest() throws Exception {
+    public void updateProduct() throws Exception {
         String jsonRequestText = "{\"id\":1,\"productName\":\"Samsung s5\",\"productDiscription\":null,\"photos\":[],\"directories\":[],\"price\":null,\"creationDate\":null}";
 
         MockMultipartFile jsonFile = new MockMultipartFile (
@@ -176,7 +176,7 @@ public class ProductControllerIntegrationTest {
     @Sql(value = {"/create-product-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     //после теста выполнить очистку БД
     @Sql(value = {"/create-product-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void deleteProductTest() throws Exception {
+    public void deleteProduct() throws Exception {
         long id = 1;
 
         this.mockMvc.perform (MockMvcRequestBuilders.delete ("/product/"+id))
