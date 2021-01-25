@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 //аннотация указывает на новый файл с настройками
 @TestPropertySource("/application-test.properties")
-class DirectoryIntegrationControllerTest {
+class DirectoryControllerIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -36,6 +36,7 @@ class DirectoryIntegrationControllerTest {
     //после теста выполнить очистку БД
     @Sql(value = {"/create-directory-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void getCore () throws Exception {
+
         // Execute the GET request
         this.mockMvc.perform(get("/directory/getCore"))
                 .andDo(print())                            //вывести полученый результат в консоль
