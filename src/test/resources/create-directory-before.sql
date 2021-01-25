@@ -1,4 +1,5 @@
 delete from linked_directory;
+delete from product;
 
 insert into linked_directory(id, directory_type, name) values
 (1, 'PARAMETER', 'memory_size');
