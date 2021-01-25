@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -46,7 +47,6 @@ public class ProductControllerIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -61,7 +61,8 @@ public class ProductControllerIntegrationTest {
     public void getAllProductsTest() throws Exception {
         // Execute the GET request
         this.mockMvc.perform(get("/product"))
-                .andDo(print())                            //вывести полученый результат в консоль
+                //вывести результат в консоль
+                .andDo(print())
                 // Validate the response code and content type
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -106,18 +107,24 @@ public class ProductControllerIntegrationTest {
                 "text/plain",
                 "some xml".getBytes());
 
-
+        // Execute the POST request
         String resultJson= this.mockMvc.perform (MockMvcRequestBuilders.multipart ("/product")
                 .file (jsonFile)
                 .file (firstFile))
+
+                //вывести результат в консоль
                 .andDo (print ())
+
                 // Validate the response code and content type
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
 
                 // Validate headers
                 .andExpect(header().string(HttpHeaders.LOCATION, "/product"))
-                .andReturn ().getResponse ().getContentAsString ();
+
+                .andReturn ()
+                .getResponse ()
+                .getContentAsString ();
 
         Product resultProduct = objectMapper.readValue(resultJson, Product.class);
 
