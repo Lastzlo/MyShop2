@@ -59,15 +59,6 @@ public class LinkedDirectory {
 
 
     public LinkedDirectory () {
-        this.id = 0l;
-        this.name = "name";
-        this.directoryType = "directoryType";
-        this.children = new HashSet<> ();
-        this.relatedDirectories = new HashSet<> ();
-        this.relatedDirectoryIds = new HashSet<> ();
-        this.father = null;
-        this.products = new HashSet<> ();
-        this.productsCount = 0l;
     }
 
 
