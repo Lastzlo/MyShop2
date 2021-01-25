@@ -325,8 +325,19 @@ public class LinkedDirectoryService {
                     //искать директорию в БД
                     this.directoryRepo.findById (directory.getId ()).ifPresent (
                             directoryFromDb -> {
-                                //добавляем к тег товару
-                                product.addDirectory (directoryFromDb);
+                                //проверить что тип директории
+                                if(
+                                        directoryFromDb.getDirectoryType ()
+                                                .equals (DirectoryType.PARAMETER.toString ())
+                                        ||
+                                        directoryFromDb.getDirectoryType ()
+                                                .equals (DirectoryType.PARAMETER_VALUE.toString ())
+                                        ||
+                                        directoryFromDb.getDirectoryType ()
+                                                .equals (DirectoryType.BRAND.toString ())){
+                                    //добавить директорию товару
+                                    product.addDirectory (directoryFromDb);
+                                }
                             }
                     );
                 }
