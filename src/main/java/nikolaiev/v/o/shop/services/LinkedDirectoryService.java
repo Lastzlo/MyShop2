@@ -12,6 +12,8 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import static nikolaiev.v.o.shop.util.LinkedDirectoryUtils.linkingDirectories;
+
 @Service
 public class LinkedDirectoryService {
 
@@ -345,6 +347,36 @@ public class LinkedDirectoryService {
 
         return product;
 
+    }
+
+    /**
+     * Добавить товар в директорию
+     *
+     * @param finalProduct товар с БД
+     * @param directory директория
+     *
+     * @return директорию с БД к которую записан товар
+     */
+    public LinkedDirectory addProductToDirectory (Product finalProduct, LinkedDirectory directory) {
+        //добавляем продукт
+        directory.addProduct (finalProduct);
+
+        //обновляем количество продуктов связных с тегом
+        directory.setProductsCount ((long) directory.getProducts ().size ());
+
+        //проверка что проверям что тип директории PARAMETER или BRAND
+        if(
+                directory.getDirectoryType ().equals (DirectoryType.PARAMETER.toString ())
+                        || directory.getDirectoryType ().equals (DirectoryType.BRAND.toString ())
+        ){
+            // связываем список директорий с деректорией
+            linkingDirectories (finalProduct.getDirectories (), directory);
+        }
+
+        //сохраняем тег в БД
+        directoryRepo.save (directory);
+
+        return directory;
     }
 
 
