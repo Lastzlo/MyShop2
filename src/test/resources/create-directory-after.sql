@@ -1,0 +1,1 @@
+delete from linked_directory;
