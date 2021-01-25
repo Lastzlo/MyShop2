@@ -309,10 +309,13 @@ public class LinkedDirectoryService {
 
     /**
      * Добавить директории из БД к товару
+     *
      * @param directories директории
      * @param product товар
+     *
+     * @return товар с директориями
      */
-    public void addDirectoriesToProduct (Set<LinkedDirectory> directories,Product product) {
+    public Product addDirectoriesToProduct (Set<LinkedDirectory> directories, Product product) {
         //копия списка директорий
         Set<LinkedDirectory> productDirectories = new HashSet<LinkedDirectory>(){{addAll (directories);}};
         //очистить список директорий товара
@@ -328,6 +331,8 @@ public class LinkedDirectoryService {
                     );
                 }
         );
+
+        return product;
 
     }
 
