@@ -85,6 +85,32 @@ class LinkedDirectoryServiceIntegrationTest {
         Assertions.assertEquals (0, actualProduct.getDirectories ().size ());
     }
 
+    @Test
+    //перед тестом выполнить очистку и заполнение БД
+    @Sql(value = {"/create-directory-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    //после теста выполнить очистку БД
+    @Sql(value = {"/create-directory-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void addDirectoriesToProductButDirectoriyTypeBrandList () {
+        //given
+        final LinkedDirectory directory1 = new LinkedDirectory () {{
+            this.setId (4l);
+        }};
+
+        final Set<LinkedDirectory> directories = new HashSet<LinkedDirectory> (){{
+            add (directory1);
+        }};
+
+        Product product = new Product (){{
+            this.setDirectories (new HashSet<> ());
+        }};
+
+        final Product actualProduct = directoryService.addDirectoriesToProduct (directories, product);
+
+        Assertions.assertEquals (0, actualProduct.getDirectories ().size ());
+    }
+
+
+
 
 }
 
