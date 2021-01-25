@@ -5,9 +5,13 @@ import nikolaiev.v.o.shop.domain.Views;
 import nikolaiev.v.o.shop.services.ProductService;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,8 +24,15 @@ public class ProductController {
 
     @GetMapping
     @JsonView(Views.FullMessage.class)
-    public List<Product> list(){
-        return productService.getAllProducts();
+    public ResponseEntity<List<Product>> list(){
+        try {
+            return ResponseEntity.ok()
+                    .location((new URI ("/product")))
+                    .body(productService.getAllProducts());
+        } catch (URISyntaxException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
     }
 
     //принимает FormData который состоит из Файлов и JSON
