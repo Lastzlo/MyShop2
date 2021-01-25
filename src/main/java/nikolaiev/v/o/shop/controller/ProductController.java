@@ -35,14 +35,30 @@ public class ProductController {
 
     }
 
+    /**
+     * Принимает продукт и файлы
+     *
+     * @param files файлы
+     * @param product продукт
+     *
+     * @return продукт с БД
+     */
     //принимает FormData который состоит из Файлов и JSON
     @PostMapping
     @JsonView(Views.FullMessage.class)
-    public Product create(
+    public ResponseEntity<Product> create(
             @RequestPart(value = "files") Optional<MultipartFile[]> files,
             @RequestPart(value = "product") Product product
     ){
-        return productService.saveProduct(product, files);
+        try {
+            return ResponseEntity
+                    .ok()
+                    .location((new URI ("/product")))
+                    .body(productService.saveProduct(product, files));
+        } catch (URISyntaxException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
     }
 
 
