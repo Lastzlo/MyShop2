@@ -94,4 +94,37 @@ class LinkedDirectoryServiceTest {
                         ArgumentMatchers.anyLong ()
                 );
     }
+
+    @Test
+    public void addDirectoriesToProductButDirectoriyTypeBrandList () {
+        //given
+        final LinkedDirectory directory1 = new LinkedDirectory (){{
+            this.setId (1l);
+            this.setName ("Name");
+            this.setDirectoryType (DirectoryType.BRAND_LIST.toString ());
+        }};
+        final Set<LinkedDirectory> directories = new HashSet<LinkedDirectory> (){{
+            add (directory1);
+        }};
+
+        Product product = new Product (){{
+            this.setDirectories (new HashSet<> ());
+        }};
+
+        // Setup mock scenari
+        when (directoryRepo.findById(1l))
+                .thenReturn (Optional.of (directory1));
+
+
+        //when
+        final Product actualProduct = directoryService.addDirectoriesToProduct (directories, product);
+
+
+        //then
+        Assertions.assertEquals (0, actualProduct.getDirectories ().size ());
+        Mockito.verify (directoryRepo, Mockito.times (1))
+                .findById(
+                        ArgumentMatchers.anyLong ()
+                );
+    }
 }
