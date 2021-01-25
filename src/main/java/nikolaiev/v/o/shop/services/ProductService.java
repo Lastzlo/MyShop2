@@ -76,7 +76,9 @@ public class ProductService {
         final Product finalProduct = productRepo.save(product);
 
         //добавляем товар из бд к тегам(директориям)
-        addProductToDirectories (finalProduct);
+        finalProduct.getDirectories ().forEach (directory -> {
+            directoryService.addProductToDirectory (finalProduct, directory);
+        });
 
         return finalProduct;
 
@@ -145,29 +147,7 @@ public class ProductService {
         return photosSet;
     }
 
-    //добавляем товар из бд к тегам(директориям)
-    private void addProductToDirectories (Product finalProduct) {
-        finalProduct.getDirectories ().forEach (directory -> {
-            //добавляем продукт
-            directory.addProduct (finalProduct);
 
-            //обновляем количество продуктов связных с тегом
-            directory.setProductsCount ((long) directory.getProducts ().size ());
-
-            //проверка что проверям что тип директории PARAMETER или BRAND
-            if(
-                    directory.getDirectoryType ().equals (DirectoryType.PARAMETER.toString ())
-                            || directory.getDirectoryType ().equals (DirectoryType.BRAND.toString ())
-            ){
-                // связываем список директорий с деректорией
-                linkingDirectories (finalProduct.getDirectories (), directory);
-            }
-
-            //сохраняем тег в БД
-            directoryRepo.save (directory);
-
-        });
-    }
 
     //обновляет информацию о товаре и картинки
     public Product updateProduct (Product product, Optional<MultipartFile[]> files) {
