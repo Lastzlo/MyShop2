@@ -6,8 +6,12 @@ import nikolaiev.v.o.shop.domain.Views;
 import nikolaiev.v.o.shop.services.LinkedDirectoryService;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Set;
 
 @RestController
@@ -17,10 +21,22 @@ public class DirectoryController {
     @Autowired
     private LinkedDirectoryService directoryService;
 
-    @GetMapping("getCore")
+    /*@GetMapping("getCore")
     @JsonView(Views.FullLinkedDirectory.class)
     public LinkedDirectory getCore(){
         return directoryService.getCore();
+    }*/
+
+    @GetMapping("/getCore")
+    @JsonView(Views.FullLinkedDirectory.class)
+    public ResponseEntity<LinkedDirectory> getCore(){
+        try {
+            return ResponseEntity.ok()
+                    .location((new URI ("/directory/getCore")))
+                    .body(directoryService.getCore());
+        } catch (URISyntaxException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @GetMapping("getProductByDirectoryId/{id}")
