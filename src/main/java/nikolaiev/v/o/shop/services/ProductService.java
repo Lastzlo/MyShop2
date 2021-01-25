@@ -67,7 +67,7 @@ public class ProductService {
         addPhotosToProduct (product, files);*/
 
         //добавить директории к товару
-        directoryService.addDirectoriesToProduct(product.getDirectories (), product);
+        product = directoryService.addDirectoriesToProduct(product.getDirectories (), product);
 
         //устонавливаем время добавления
         product.setCreationDate (LocalDateTime.now ());
