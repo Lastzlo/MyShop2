@@ -1,6 +1,7 @@
 package nikolaiev.v.o.shop.services;
 
 
+import nikolaiev.v.o.shop.domain.DirectoryType;
 import nikolaiev.v.o.shop.domain.LinkedDirectory;
 
 import nikolaiev.v.o.shop.domain.Product;
@@ -18,7 +19,6 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -36,6 +36,7 @@ class LinkedDirectoryServiceTest {
         final LinkedDirectory directory1 = new LinkedDirectory (){{
             this.setId (1l);
             this.setName ("Name");
+            this.setDirectoryType (DirectoryType.PARAMETER_VALUE.toString ());
         }};
         final Set<LinkedDirectory> directories = new HashSet<LinkedDirectory> (){{
             add (directory1);
