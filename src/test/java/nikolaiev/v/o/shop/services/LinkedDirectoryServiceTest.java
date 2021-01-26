@@ -31,6 +31,33 @@ class LinkedDirectoryServiceTest {
     private LinkedDirectoryRepo directoryRepo;
 
     @Test
+    public void addDirectoriesToProduct () {
+        //given
+        final LinkedDirectory directory1 = new LinkedDirectory (){{
+            this.setName ("directory1");
+        }};
+        final LinkedDirectory directory2 = new LinkedDirectory (){{
+            this.setName ("directory2");
+        }};
+
+        final Set<LinkedDirectory> directories = new HashSet<LinkedDirectory> (){{
+            add (directory1);
+            add (directory2);
+        }};
+
+        Product product = new Product (){{
+            this.setDirectories (new HashSet<> ());
+        }};
+
+        //when
+        final Product actualProduct = directoryService.addDirectoriesToProduct (directories, product);
+
+        //then
+        Assertions.assertEquals (2, actualProduct.getDirectories ().size (), "actualProduct.getDirectories ().size () should be 2");
+        Assertions.assertTrue (actualProduct.getDirectories ().contains (directory1), "actualProduct getDirectories () should be contain directory1");
+    }
+
+    @Test
     public void addDirectoriesToProductButDirectoryTypeParameter () {
         //given
         final LinkedDirectory directory1 = new LinkedDirectory (){{
