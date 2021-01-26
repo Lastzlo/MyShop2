@@ -129,7 +129,46 @@ class LinkedDirectoryServiceTest {
     }
 
     @Test
-    void addProductToDirectory () {
+    void addProductToDirectories () {
+        //given
+        Product product1 = new Product (){{
+           this.setProductName ("Product that been in directory1");
+        }};
+        LinkedDirectory directory1 = new LinkedDirectory (){{
+            this.setProductsCount (1l);
+            this.setProducts (new HashSet<Product> (){{add(product1);}});
+        }};
+        LinkedDirectory directory2 = new LinkedDirectory (){{
+            this.setProductsCount (2l);
+            this.setProducts (new HashSet<> ());
+        }};
+        LinkedDirectory directory3 = new LinkedDirectory (){{
+            this.setProductsCount (3l);
+            this.setProducts (new HashSet<> ());
+        }};
+
+        //directories
+        Set<LinkedDirectory> directories = new HashSet<LinkedDirectory> (){{
+            add (directory1);
+            add (directory2);
+            add (directory3);
+        }};
+
+        //Product than need to add to directories
+        Product product = new Product (){{
+            this.setProductName ("Product than need to add to directories");
+        }};
+
+        //when
+        directoryService.addProductToDirectories (product,directories);
+
+        //then
+        //test directory1
+        Assertions.assertEquals (2l, directory1.getProductsCount (), "directory1 productsCount should be 2");
+        Assertions.assertTrue (directory1.getProducts ().contains (product), "directory1 products should contains product");
+        //test directory3
+        Assertions.assertEquals (1l, directory3.getProductsCount (), "directory3 productsCount should be 1");
+        Assertions.assertTrue (directory3.getProducts ().contains (product), "directory3 products should contains product");
 
     }
 }
