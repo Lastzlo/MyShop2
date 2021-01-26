@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Predicate;
 
 import static nikolaiev.v.o.shop.util.LinkedDirectoryUtils.linkingDirectoryToDirectories;
 
@@ -301,28 +300,15 @@ public class LinkedDirectoryService {
      * @return товар с директориями
      */
     public Product addDirectoriesToProduct (Set<LinkedDirectory> directories, Product product) {
-        //копия списка директорий
-        Set<LinkedDirectory> productDirectories = new HashSet<LinkedDirectory>(){{addAll (directories);}};
         //очистить список директорий товара
         product.getDirectories ().clear ();
         //добавить к товару директории с БД
-        productDirectories.forEach (directory -> {
-                    //искать директорию в БД
-                    this.directoryRepo.findById (directory.getId ()).ifPresent (
-                            directoryFromDb -> {
-                                //проверить что тип директории
-                                if(directoryFromDb.getDirectoryType ()
-                                                .equals (DirectoryType.PARAMETER.toString ())){
-                                    //добавить директорию товару
-                                    product.addDirectory (directoryFromDb);
-                                }
-                            }
-                    );
-                }
-        );
+        directories.forEach (directory -> {
+            //добавить директорию товару
+            product.addDirectory (directory);
+        });
 
         return product;
-
     }
 
     /**
