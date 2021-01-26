@@ -310,15 +310,8 @@ public class LinkedDirectoryService {
                     this.directoryRepo.findById (directory.getId ()).ifPresent (
                             directoryFromDb -> {
                                 //проверить что тип директории
-                                if(
-                                        directoryFromDb.getDirectoryType ()
-                                                .equals (DirectoryType.PARAMETER.toString ())
-                                        ||
-                                        directoryFromDb.getDirectoryType ()
-                                                .equals (DirectoryType.PARAMETER_VALUE.toString ())
-                                        ||
-                                        directoryFromDb.getDirectoryType ()
-                                                .equals (DirectoryType.BRAND.toString ())){
+                                if(directoryFromDb.getDirectoryType ()
+                                                .equals (DirectoryType.PARAMETER.toString ())){
                                     //добавить директорию товару
                                     product.addDirectory (directoryFromDb);
                                 }
