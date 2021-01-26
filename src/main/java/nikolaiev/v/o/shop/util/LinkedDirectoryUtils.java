@@ -5,9 +5,23 @@ import nikolaiev.v.o.shop.domain.LinkedDirectory;
 import nikolaiev.v.o.shop.domain.Product;
 
 import java.util.Set;
+import java.util.function.Predicate;
 
 
 public class LinkedDirectoryUtils {
+
+    /**
+     * @return условие которое должна выполнить директория
+     */
+    public static Predicate<LinkedDirectory> getDirectoryPredicate (){
+        //условие
+        Predicate<LinkedDirectory> isDirectorySuitable = linkedDirectory -> {
+            return linkedDirectory.getDirectoryType ().equals (DirectoryType.PARAMETER.toString ());
+        };
+
+        return isDirectorySuitable;
+    }
+
     /**
      * Связать список директорий, с директорией
      *
