@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import static nikolaiev.v.o.shop.util.LinkedDirectoryUtils.linkingDirectories;
+import static nikolaiev.v.o.shop.util.LinkedDirectoryUtils.linkingDirectoryToDirectories;
 
 @Service
 public class LinkedDirectoryService {
@@ -339,21 +339,44 @@ public class LinkedDirectoryService {
         //обновляем количество продуктов связных с тегом
         directory.setProductsCount ((long) directory.getProducts ().size ());
 
-        //проверка что проверям что тип директории PARAMETER или BRAND
-        if(
-                directory.getDirectoryType ().equals (DirectoryType.PARAMETER.toString ())
-                        || directory.getDirectoryType ().equals (DirectoryType.BRAND.toString ())
-        ){
-            // связываем список директорий с деректорией
-            linkingDirectories (finalProduct.getDirectories (), directory);
-        }
-
         //сохраняем тег в БД
         directoryRepo.save (directory);
 
         return directory;
     }
 
+    public void linkingDirectories (Set<LinkedDirectory> directories) {
+        directories.forEach (directory -> {
+            //проверка что проверям что тип директории PARAMETER или BRAND
+            if(
+                    directory.getDirectoryType ().equals (DirectoryType.PARAMETER.toString ())
+            ){
+                // связываем список директорий с деректорией
+                linkingDirectoryToDirectories (directory, directories);
+            }
+
+            //сохраняем директорию в БД
+            directoryRepo.save (directory);
+        });
+    }
 
 
+    /**
+     * Добавить товар в директории
+     *
+     * @param finalProduct товар с БД
+     * @param directories список директорий
+     */
+    public void addProductToDirectories (Product finalProduct, Set<LinkedDirectory> directories) {
+        directories.forEach (directory -> {
+            //добавляем продукт
+            directory.addProduct (finalProduct);
+
+            //обновляем количество продуктов связных с тегом
+            directory.setProductsCount ((long) directory.getProducts ().size ());
+
+            //сохраняем директорию в БД
+            directoryRepo.save (directory);
+        });
+    }
 }
