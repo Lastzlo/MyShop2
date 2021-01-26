@@ -57,7 +57,7 @@ class LinkedDirectoryServiceTest {
         Assertions.assertTrue (actualProduct.getDirectories ().contains (directory1), "actualProduct getDirectories () should be contain directory1");
     }
 
-    @Test
+    /*@Test
     public void addDirectoriesToProductButDirectoryTypeParameter () {
         //given
         final LinkedDirectory directory1 = new LinkedDirectory (){{
@@ -153,7 +153,7 @@ class LinkedDirectoryServiceTest {
                 .findById(
                         ArgumentMatchers.anyLong ()
                 );
-    }
+    }*/
 
     @Test
     void addProductToDirectories () {
