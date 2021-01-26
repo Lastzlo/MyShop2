@@ -6,18 +6,12 @@ import nikolaiev.v.o.shop.repos.LinkedDirectoryRepo;
 import nikolaiev.v.o.shop.services.LinkedDirectoryService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
-
-import static nikolaiev.v.o.shop.util.LinkedDirectoryUtils.dislinkDirectories;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest
 class LinkedDirectoryUtilsTest {
@@ -135,6 +129,38 @@ class LinkedDirectoryUtilsTest {
         //test directory1
         Assertions.assertEquals (1, directory1.getRelatedDirectories ().size (),"directory1 related directories size should be 1");
         Assertions.assertEquals (1, directory1.getRelatedDirectoryIds ().size (),"directory1 related directories id size should be 1");
+    }
+
+    @Test
+    void checkDirectories () {
+        //given
+        LinkedDirectory directory1 = new LinkedDirectory (){{
+            this.setDirectoryType (DirectoryType.PARAMETER.toString ());
+        }};
+        LinkedDirectory directory2 = new LinkedDirectory (){{
+            this.setDirectoryType (DirectoryType.PARAMETER_LIST.toString ());
+        }};
+        LinkedDirectory directory3 = new LinkedDirectory (){{
+            this.setDirectoryType (DirectoryType.CATEGORY.toString ());
+        }};
+
+        //directories
+        Set<LinkedDirectory> directories = new HashSet<LinkedDirectory> (){{
+            add (directory1);
+            add (directory2);
+            add (directory3);
+        }};
+
+
+        //when
+        final Set<LinkedDirectory> checkedDirectories = LinkedDirectoryUtils.checkDirectories (directories, LinkedDirectoryUtils.getDirectoryPredicate ());
+
+        //then
+        Assertions.assertTrue (checkedDirectories.contains (directory1), "checkedDirectories should be contain directory1");
+        Assertions.assertEquals (1, checkedDirectories.size (), "checkedDirectories.size should be 1");
+        Assertions.assertFalse (checkedDirectories.contains (directory2), "checkedDirectories should not contain directory2");
+        Assertions.assertFalse (checkedDirectories.contains (directory3), "checkedDirectories should not contain directory3");
+
     }
 
 }
