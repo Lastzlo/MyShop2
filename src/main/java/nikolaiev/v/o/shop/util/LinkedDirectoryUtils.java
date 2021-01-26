@@ -14,20 +14,13 @@ public class LinkedDirectoryUtils {
      * @param inputDirectories список директорий
      * @param directory директория
      */
-    public static void linkingDirectories (Set<LinkedDirectory> inputDirectories, LinkedDirectory directory) {
+    public static void linkingDirectoryToDirectories (LinkedDirectory directory, Set<LinkedDirectory> inputDirectories) {
         inputDirectories.forEach (inputDirectory -> {
             //проверям что директория к которой хотим связать не такая же, а также ее тип PARAMETER или BRAND
             if (
                     directory != inputDirectory
-                            && (
-                            inputDirectory.getDirectoryType ()
-                                    .equals (DirectoryType.PARAMETER.toString ())
-                                    ||
-                                    inputDirectory.getDirectoryType ()
-                                            .equals (DirectoryType.PARAMETER_VALUE.toString ())
-                                    ||
-                                    inputDirectory.getDirectoryType ()
-                                            .equals (DirectoryType.BRAND.toString ()))
+                            && (inputDirectory.getDirectoryType ()
+                                    .equals (DirectoryType.PARAMETER.toString ()))
 
             ) {
 
@@ -53,15 +46,15 @@ public class LinkedDirectoryUtils {
 //                        System.out.println ("directoryToDislink не имеет привязаных продуктов, можно удалялть связи с directories");
 
                         directories.forEach (
-                                oldNeededDirectory ->{
+                                directory ->{
 
 //                                    System.out.println ("//удалили directoryToDislink с oldNeededDirectoryId");
-                                    oldNeededDirectory.getRelatedDirectories ().remove (directoryToDislink);
-                                    oldNeededDirectory.getRelatedDirectoryIds ().remove (directoryToDislink.getId ());
+                                    directory.getRelatedDirectories ().remove (directoryToDislink);
+                                    directory.getRelatedDirectoryIds ().remove (directoryToDislink.getId ());
 
 //                                    System.out.println ("//удалили oldNeededDirectoryId с directoryToDislink");
-                                    directoryToDislink.getRelatedDirectories ().remove (oldNeededDirectory);
-                                    directoryToDislink.getRelatedDirectoryIds ().remove (oldNeededDirectory.getId ());
+                                    directoryToDislink.getRelatedDirectories ().remove (directory);
+                                    directoryToDislink.getRelatedDirectoryIds ().remove (directory.getId ());
 
                                 }
 
@@ -72,13 +65,13 @@ public class LinkedDirectoryUtils {
 //                        System.out.println ("directoryToDislink имеет ("+directoryToDislink.getProductsCount ()+") привязаных продуктов");
 
                         directories.forEach (
-                                oldNeededDirectory ->{
-                                    //встречаеться ли хоть один раз oldNeededDirectory в directoryToDislink.getProducts.Product.getDirectories
+                                directory ->{
+                                    //встречаеться ли хоть один раз directory в directoryToDislink.getProducts.Product.getDirectories
                                     boolean isOldNeededDirectoryInDirectoryToDeleteProductsDirectories = false;
 
                                     for (Product product1: directoryToDislink.getProducts ()
                                     ) {
-                                        if(product1.getDirectories ().contains (oldNeededDirectory)){
+                                        if(product1.getDirectories ().contains (directory)){
                                             isOldNeededDirectoryInDirectoryToDeleteProductsDirectories = true;
 
                                             break;
@@ -86,24 +79,24 @@ public class LinkedDirectoryUtils {
 
                                     }
 
-                                    //встречаеться ли хоть один раз oldNeededDirectory в directoryToDislink.getProducts.Product.getDirectories
-                                    if(!isOldNeededDirectoryInDirectoryToDeleteProductsDirectories){
+                                    //встречаеться ли хоть один раз directory в directoryToDislink.getProducts.Product.getDirectories
+                                    if (isOldNeededDirectoryInDirectoryToDeleteProductsDirectories) {
+//                                        System.out.println ("isOldNeededDirectoryInDirectoryToDeleteProductsDirectories");
+//                                        System.out.println ("Да встречаеться directory в directoryToDislink.getProducts.Product.getDirectories");
+                                    } else {
 //                                        System.out.println ("!isOldNeededDirectoryInDirectoryToDeleteProductsDirectories");
-//                                        System.out.println ("Нет, не встречаеться oldNeededDirectory в directoryToDislink.getProducts.Product.getDirectories");
+//                                        System.out.println ("Нет, не встречаеться directory в directoryToDislink.getProducts.Product.getDirectories");
 
-//                                        System.out.println ("oldNeededDirectory = "+oldNeededDirectory);
+//                                        System.out.println ("directory = "+directory);
 //                                        System.out.println ("directoryToDislink = "+directoryToDislink);
 
 //                                        System.out.println ("//удалили directoryToDislink с oldNeededDirectoryId");
-                                        oldNeededDirectory.getRelatedDirectories ().remove (directoryToDislink);
-                                        oldNeededDirectory.getRelatedDirectoryIds ().remove (directoryToDislink.getId ());
+                                        directory.getRelatedDirectories ().remove (directoryToDislink);
+                                        directory.getRelatedDirectoryIds ().remove (directoryToDislink.getId ());
 
 //                                        System.out.println ("//удалили oldNeededDirectoryId с directoryToDislink");
-                                        directoryToDislink.getRelatedDirectories ().remove (oldNeededDirectory);
-                                        directoryToDislink.getRelatedDirectoryIds ().remove (oldNeededDirectory.getId ());
-                                    } else {
-//                                        System.out.println ("isOldNeededDirectoryInDirectoryToDeleteProductsDirectories");
-//                                        System.out.println ("Да встречаеться oldNeededDirectory в directoryToDislink.getProducts.Product.getDirectories");
+                                        directoryToDislink.getRelatedDirectories ().remove (directory);
+                                        directoryToDislink.getRelatedDirectoryIds ().remove (directory.getId ());
                                     }
 
                                 }
