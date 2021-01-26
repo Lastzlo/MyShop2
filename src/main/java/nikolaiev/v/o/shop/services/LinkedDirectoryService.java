@@ -364,7 +364,6 @@ public class LinkedDirectoryService {
         });
     }
 
-
     public Set<LinkedDirectory> getDirectoriesCopyFromDB (Set<LinkedDirectory> directories) {
         Set<LinkedDirectory> resultSet = new HashSet<> ();
 
@@ -379,26 +378,4 @@ public class LinkedDirectoryService {
         return resultSet;
     }
 
-    /**
-     * Возвращает список директорий которые выполняют условие
-     *
-     * @param directories список директорий
-     * @param isDirectorySuitable условие
-     *
-     * @return список директорий которые выполняют условие
-     */
-    public Set<LinkedDirectory> checkDirectories (Set<LinkedDirectory> directories, Predicate<LinkedDirectory> isDirectorySuitable) {
-        Set<LinkedDirectory> resultSet = new HashSet<> ();
-
-        directories.forEach (directory -> {
-                    //преверить выполнение условия
-                    if(isDirectorySuitable.test (directory)){
-                        //добавить в resultSet
-                        resultSet.add (directory);
-                    }
-                }
-        );
-
-        return resultSet;
-    }
 }

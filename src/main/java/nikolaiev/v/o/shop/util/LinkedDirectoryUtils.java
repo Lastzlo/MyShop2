@@ -4,6 +4,7 @@ import nikolaiev.v.o.shop.domain.DirectoryType;
 import nikolaiev.v.o.shop.domain.LinkedDirectory;
 import nikolaiev.v.o.shop.domain.Product;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -131,6 +132,29 @@ public class LinkedDirectoryUtils {
         }
     }
 
+
+    /**
+     * Возвращает список директорий которые выполняют условие
+     *
+     * @param directories список директорий
+     * @param isDirectorySuitable условие
+     *
+     * @return список директорий которые выполняют условие
+     */
+    public static Set<LinkedDirectory> checkDirectories (Set<LinkedDirectory> directories, Predicate<LinkedDirectory> isDirectorySuitable) {
+        Set<LinkedDirectory> resultSet = new HashSet<> ();
+
+        directories.forEach (directory -> {
+                    //преверить выполнение условия
+                    if(isDirectorySuitable.test (directory)){
+                        //добавить в resultSet
+                        resultSet.add (directory);
+                    }
+                }
+        );
+
+        return resultSet;
+    }
 
 
 }
