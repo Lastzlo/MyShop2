@@ -324,27 +324,6 @@ public class LinkedDirectoryService {
 
     }
 
-    /**
-     * Добавить товар в директорию
-     *
-     * @param finalProduct товар с БД
-     * @param directory директория
-     *
-     * @return директорию с БД к которую записан товар
-     */
-    public LinkedDirectory addProductToDirectory (Product finalProduct, LinkedDirectory directory) {
-        //добавляем продукт
-        directory.addProduct (finalProduct);
-
-        //обновляем количество продуктов связных с тегом
-        directory.setProductsCount ((long) directory.getProducts ().size ());
-
-        //сохраняем тег в БД
-        directoryRepo.save (directory);
-
-        return directory;
-    }
-
     public void linkingDirectories (Set<LinkedDirectory> directories) {
         directories.forEach (directory -> {
             //проверка что проверям что тип директории PARAMETER или BRAND
