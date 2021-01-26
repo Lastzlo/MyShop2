@@ -31,17 +31,9 @@ public class LinkedDirectoryUtils {
      */
     public static void linkingDirectoryToDirectories (LinkedDirectory directory, Set<LinkedDirectory> inputDirectories) {
         inputDirectories.forEach (inputDirectory -> {
-            //проверям что директория к которой хотим связать не такая же, а также ее тип PARAMETER или BRAND
-            if (
-                    directory != inputDirectory
-                            && (inputDirectory.getDirectoryType ()
-                                    .equals (DirectoryType.PARAMETER.toString ()))
-
-            ) {
-
+            if (directory != inputDirectory) {
                 directory.addRelatedDirectory (inputDirectory);
                 directory.addRelatedDirectoryId (inputDirectory.getId ());
-
             }
         });
     }
