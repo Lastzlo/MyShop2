@@ -56,8 +56,10 @@ class LinkedDirectoryServiceIntegrationTest {
             this.setDirectories (new HashSet<> ());
         }};
 
+        //when
         final Product actualProduct = directoryService.addDirectoriesToProduct (directories, product);
 
+        //then
         Assertions.assertEquals (2, actualProduct.getDirectories ().size ());
     }
 
@@ -104,12 +106,46 @@ class LinkedDirectoryServiceIntegrationTest {
             this.setDirectories (new HashSet<> ());
         }};
 
+        //when
         final Product actualProduct = directoryService.addDirectoriesToProduct (directories, product);
 
+        //then
         Assertions.assertEquals (0, actualProduct.getDirectories ().size ());
     }
 
 
+    @Test
+    //перед тестом выполнить очистку и заполнение БД
+    @Sql(value = {"/create-directory-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    //после теста выполнить очистку БД
+    @Sql(value = {"/create-directory-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void getDirectoriesCopyFromDB(){
+        //given
+        //directory1 is in the database
+        final LinkedDirectory directory1 = new LinkedDirectory () {{
+            this.setId (1l);
+        }};
+        //directory2 is in the database
+        final LinkedDirectory directory2 = new LinkedDirectory () {{
+            this.setId (2l);
+        }};
+        //directory3 is not present in the database
+        final LinkedDirectory directory3 = new LinkedDirectory () {{
+            this.setId (99l);
+        }};
+
+        final Set<LinkedDirectory> directories = new HashSet<LinkedDirectory> (){{
+            add (directory1);
+            add (directory2);
+            add (directory3);
+        }};
+
+        //when
+        final Set<LinkedDirectory> directoriesFromDB = directoryService.getDirectoriesCopyFromDB (directories);
+
+        //then
+        Assertions.assertEquals (2, directoriesFromDB.size (), "directoriesFromDB.size should be 2");
+    }
 
 
 }
