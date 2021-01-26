@@ -31,12 +31,12 @@ class LinkedDirectoryServiceTest {
     private LinkedDirectoryRepo directoryRepo;
 
     @Test
-    public void addDirectoriesToProduct () {
+    public void addDirectoriesToProductButDirectoryTypeParameter () {
         //given
         final LinkedDirectory directory1 = new LinkedDirectory (){{
             this.setId (1l);
             this.setName ("Name");
-            this.setDirectoryType (DirectoryType.PARAMETER_VALUE.toString ());
+            this.setDirectoryType (DirectoryType.PARAMETER.toString ());
         }};
         final Set<LinkedDirectory> directories = new HashSet<LinkedDirectory> (){{
             add (directory1);
@@ -96,12 +96,12 @@ class LinkedDirectoryServiceTest {
     }
 
     @Test
-    public void addDirectoriesToProductButDirectoriyTypeBrandList () {
+    public void addDirectoriesToProductButDirectoriyTypeParameterList () {
         //given
         final LinkedDirectory directory1 = new LinkedDirectory (){{
             this.setId (1l);
             this.setName ("Name");
-            this.setDirectoryType (DirectoryType.BRAND_LIST.toString ());
+            this.setDirectoryType (DirectoryType.PARAMETER_LIST.toString ());
         }};
         final Set<LinkedDirectory> directories = new HashSet<LinkedDirectory> (){{
             add (directory1);
@@ -126,5 +126,10 @@ class LinkedDirectoryServiceTest {
                 .findById(
                         ArgumentMatchers.anyLong ()
                 );
+    }
+
+    @Test
+    void addProductToDirectory () {
+
     }
 }
