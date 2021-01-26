@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import static nikolaiev.v.o.shop.util.LinkedDirectoryUtils.linkingDirectoryToDirectories;
 
@@ -372,6 +373,29 @@ public class LinkedDirectoryService {
                             //добавить в resultSet
                             resultSet::add
                     );
+                }
+        );
+
+        return resultSet;
+    }
+
+    /**
+     * Возвращает список директорий которые выполняют условие
+     *
+     * @param directories список директорий
+     * @param isDirectorySuitable условие
+     *
+     * @return список директорий которые выполняют условие
+     */
+    public Set<LinkedDirectory> checkDirectories (Set<LinkedDirectory> directories, Predicate<LinkedDirectory> isDirectorySuitable) {
+        Set<LinkedDirectory> resultSet = new HashSet<> ();
+
+        directories.forEach (directory -> {
+                    //преверить выполнение условия
+                    if(isDirectorySuitable.test (directory)){
+                        //добавить в resultSet
+                        resultSet.add (directory);
+                    }
                 }
         );
 
