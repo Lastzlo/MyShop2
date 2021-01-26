@@ -63,7 +63,7 @@ class LinkedDirectoryServiceIntegrationTest {
         Assertions.assertEquals (2, actualProduct.getDirectories ().size ());
     }
 
-    @Test
+    /*@Test
     public void addDirectoriesToProductButDirectoriesNotFound () {
         //given
         final LinkedDirectory directory1 = new LinkedDirectory () {{
@@ -85,9 +85,9 @@ class LinkedDirectoryServiceIntegrationTest {
         final Product actualProduct = directoryService.addDirectoriesToProduct (directories, product);
 
         Assertions.assertEquals (0, actualProduct.getDirectories ().size ());
-    }
+    }*/
 
-    @Test
+    /*@Test
     //перед тестом выполнить очистку и заполнение БД
     @Sql(value = {"/create-directory-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     //после теста выполнить очистку БД
@@ -111,7 +111,7 @@ class LinkedDirectoryServiceIntegrationTest {
 
         //then
         Assertions.assertEquals (0, actualProduct.getDirectories ().size ());
-    }
+    }*/
 
 
     @Test
