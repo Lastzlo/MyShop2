@@ -90,7 +90,7 @@ class LinkedDirectoryServiceIntegrationTest {
     @Sql(value = {"/create-directory-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     //после теста выполнить очистку БД
     @Sql(value = {"/create-directory-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void addDirectoriesToProductButDirectoriyTypeBrandList () {
+    public void addDirectoriesToProductButDirectoryTypeParameterList () {
         //given
         final LinkedDirectory directory1 = new LinkedDirectory () {{
             this.setId (4l);
