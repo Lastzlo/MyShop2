@@ -6,7 +6,7 @@ insert into linked_directory(id, directory_type, name) values
 insert into linked_directory(id, directory_type, name) values
 (2, 'PARAMETER', 'color');
 insert into linked_directory(id, directory_type, name) values
-(4, 'BRAND_LIST', 'color');
+(4, 'PARAMETER_LIST', 'color');
 
 insert into product(id, product_name) values
 (3, 'Apple iPhone 10');
