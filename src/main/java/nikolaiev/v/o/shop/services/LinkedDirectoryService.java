@@ -337,13 +337,8 @@ public class LinkedDirectoryService {
      */
     public void linkingDirectories (Set<LinkedDirectory> directories) {
         directories.forEach (directory -> {
-            //проверка что проверям что тип директории PARAMETER или BRAND
-            if(
-                    directory.getDirectoryType ().equals (DirectoryType.PARAMETER.toString ())
-            ){
-                // связываем список директорий с деректорией
-                linkingDirectoryToDirectories (directory, directories);
-            }
+            // связываем список директорий с деректорией
+            linkingDirectoryToDirectories(directory, directories);
 
             //сохраняем директорию в БД
             directoryRepo.save (directory);
