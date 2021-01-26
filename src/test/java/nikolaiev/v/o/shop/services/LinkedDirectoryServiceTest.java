@@ -6,6 +6,7 @@ import nikolaiev.v.o.shop.domain.LinkedDirectory;
 
 import nikolaiev.v.o.shop.domain.Product;
 import nikolaiev.v.o.shop.repos.LinkedDirectoryRepo;
+import nikolaiev.v.o.shop.util.LinkedDirectoryUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -156,7 +157,7 @@ class LinkedDirectoryServiceTest {
     }*/
 
     @Test
-    void addProductToDirectories () {
+    public void addProductToDirectories () {
         //given
         Product product1 = new Product (){{
            this.setProductName ("Product that been in directory1");
@@ -196,6 +197,65 @@ class LinkedDirectoryServiceTest {
         //test directory3
         Assertions.assertEquals (1l, directory3.getProductsCount (), "directory3 productsCount should be 1");
         Assertions.assertTrue (directory3.getProducts ().contains (product), "directory3 products should contains product");
+
+    }
+
+    @Test
+    public void linkingDirectories(){
+        //given
+        //some directories
+        LinkedDirectory directory1 = new LinkedDirectory (){{
+            this.setId (1l);
+            this.setName ("Good Directory1");
+            this.setDirectoryType (DirectoryType.PARAMETER.toString ());
+            this.setRelatedDirectories (new HashSet<> ());
+            this.setRelatedDirectoryIds (new HashSet<> ());
+        }};
+        LinkedDirectory directory2 = new LinkedDirectory (){{
+            this.setId (2l);
+            this.setName ("Good Directory2");
+            this.setDirectoryType (DirectoryType.PARAMETER.toString ());
+            this.setRelatedDirectories (new HashSet<> ());
+            this.setRelatedDirectoryIds (new HashSet<> ());
+        }};
+        LinkedDirectory directory3 = new LinkedDirectory (){{
+            this.setId (4l);
+            this.setName ("Good Directory3");
+            this.setDirectoryType (DirectoryType.PARAMETER.toString ());
+            this.setRelatedDirectories (new HashSet<> ());
+            this.setRelatedDirectoryIds (new HashSet<> ());
+        }};
+
+        Set<LinkedDirectory> directorySet = new HashSet<LinkedDirectory> (){{
+            add (directory1);
+            add (directory2);
+            add (directory3);
+        }};
+
+
+        //when
+        directoryService.linkingDirectories (directorySet);
+
+        //then
+        //test directory1
+        Assertions.assertEquals (2, directory1.getRelatedDirectories ().size (),  "directory1 related directories size should be 2");
+        Assertions.assertEquals (2, directory1.getRelatedDirectoryIds ().size (), "directory1 related directories Id size should be 2");
+        Assertions.assertTrue (directory1.getRelatedDirectories ().contains (directory2), "directory1 related directories should be contain directory2");
+
+        Assertions.assertFalse (directory1.getRelatedDirectories ().contains (directory1), "directory1 related directories should not contain directory1");
+
+        //test directory2
+        Assertions.assertEquals (2, directory2.getRelatedDirectories ().size (),  "directory2 related directories size should be 2");
+        Assertions.assertEquals (2, directory2.getRelatedDirectoryIds ().size (), "directory2 related directories Id size should be 2");
+        Assertions.assertTrue (directory2.getRelatedDirectories ().contains (directory3), "directory2 related directories should be contain directory3");
+
+
+
+
+
+
+
+
 
     }
 }
