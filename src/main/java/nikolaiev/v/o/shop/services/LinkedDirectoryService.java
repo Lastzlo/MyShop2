@@ -362,4 +362,19 @@ public class LinkedDirectoryService {
             directoryRepo.save (directory);
         });
     }
+
+
+    public Set<LinkedDirectory> getDirectoriesCopyFromDB (Set<LinkedDirectory> directories) {
+        Set<LinkedDirectory> resultSet = new HashSet<> ();
+
+        directories.forEach (directory -> {
+                    this.directoryRepo.findById (directory.getId ()).ifPresent (
+                            //добавить в resultSet
+                            resultSet::add
+                    );
+                }
+        );
+
+        return resultSet;
+    }
 }
