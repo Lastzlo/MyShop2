@@ -24,6 +24,7 @@ class LinkedDirectoryUtilsTest {
 
     @Test
     void linkingDirectoryToDirectories () {
+        //given
         //some directories
         LinkedDirectory directory1 = new LinkedDirectory (){{
             this.setId (1l);
@@ -39,13 +40,6 @@ class LinkedDirectoryUtilsTest {
             this.setRelatedDirectories (new HashSet<> ());
             this.setRelatedDirectoryIds (new HashSet<> ());
         }};
-        LinkedDirectory directory3 = new LinkedDirectory (){{
-            this.setId (3l);
-            this.setName ("Bad Directory");
-            this.setDirectoryType (DirectoryType.CATEGORY.toString ());
-            this.setRelatedDirectories (new HashSet<> ());
-            this.setRelatedDirectoryIds (new HashSet<> ());
-        }};
         //directory that need to relate with other directories
         LinkedDirectory mainDirectory = new LinkedDirectory (){{
             this.setId (4l);
@@ -58,23 +52,23 @@ class LinkedDirectoryUtilsTest {
         Set<LinkedDirectory> directorySet = new HashSet<LinkedDirectory> (){{
             add (directory1);
             add (directory2);
-            add (directory3);
             add (mainDirectory);
         }};
 
+
+        //when
         LinkedDirectoryUtils.linkingDirectoryToDirectories (mainDirectory,directorySet);
+
+        //then
         //test mainDirectory
         Assertions.assertEquals (2, mainDirectory.getRelatedDirectories ().size (),  "mainDirectory related directories size should be 2");
         Assertions.assertEquals (2, mainDirectory.getRelatedDirectoryIds ().size (), "mainDirectory related directories Id size should be 2");
-        Assertions.assertTrue (mainDirectory.getRelatedDirectories ().contains (directory1), "mainDirectory related directories should be contains directory1");
-        Assertions.assertTrue (mainDirectory.getRelatedDirectories ().contains (directory2), "mainDirectory related directories should be contains directory2");
-        Assertions.assertFalse (mainDirectory.getRelatedDirectories ().contains (directory3), "mainDirectory related directories should not be contains directory3");
+        Assertions.assertFalse (mainDirectory.getRelatedDirectories ().contains (mainDirectory), "mainDirectory related directories should not contain mainDirectory");
+        Assertions.assertTrue (mainDirectory.getRelatedDirectories ().contains (directory1), "mainDirectory related directories should be contain directory1");
+        Assertions.assertTrue (mainDirectory.getRelatedDirectories ().contains (directory2), "mainDirectory related directories should be contain directory2");
 
         //test directory1
         Assertions.assertEquals (0, directory2.getRelatedDirectories ().size (), "directory2 related directories size should be 0");
-
-        //test directory3
-        Assertions.assertEquals (0, directory3.getRelatedDirectories ().size (), "directory2 related directories size should be 0");
 
     }
 
