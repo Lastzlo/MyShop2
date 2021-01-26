@@ -324,22 +324,6 @@ public class LinkedDirectoryService {
 
     }
 
-    public void linkingDirectories (Set<LinkedDirectory> directories) {
-        directories.forEach (directory -> {
-            //проверка что проверям что тип директории PARAMETER или BRAND
-            if(
-                    directory.getDirectoryType ().equals (DirectoryType.PARAMETER.toString ())
-            ){
-                // связываем список директорий с деректорией
-                linkingDirectoryToDirectories (directory, directories);
-            }
-
-            //сохраняем директорию в БД
-            directoryRepo.save (directory);
-        });
-    }
-
-
     /**
      * Добавить товар в директории
      *
@@ -353,6 +337,26 @@ public class LinkedDirectoryService {
 
             //обновляем количество продуктов связных с тегом
             directory.setProductsCount ((long) directory.getProducts ().size ());
+
+            //сохраняем директорию в БД
+            directoryRepo.save (directory);
+        });
+    }
+
+    /**
+     * Связывает список директорий между собой
+     *
+     * @param directories список директорий
+     */
+    public void linkingDirectories (Set<LinkedDirectory> directories) {
+        directories.forEach (directory -> {
+            //проверка что проверям что тип директории PARAMETER или BRAND
+            if(
+                    directory.getDirectoryType ().equals (DirectoryType.PARAMETER.toString ())
+            ){
+                // связываем список директорий с деректорией
+                linkingDirectoryToDirectories (directory, directories);
+            }
 
             //сохраняем директорию в БД
             directoryRepo.save (directory);
