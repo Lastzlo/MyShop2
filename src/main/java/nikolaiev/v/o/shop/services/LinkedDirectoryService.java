@@ -74,36 +74,18 @@ public class LinkedDirectoryService {
 
                 //добавляем в него дочернюю директорию Бренды
                 LinkedDirectory brandList = new LinkedDirectory (
-
-                        DirectoryType.BRAND_LIST
+                        DirectoryType.PARAMETER_LIST,
+                        "Бренд"
                 );
                 brandList.setFather (child);
                 brandList = directoryRepo.save (brandList);
 
-                //добавляем в него дочернюю директорию Параметры
-                LinkedDirectory parameterList = new LinkedDirectory (
-                        DirectoryType.PARAMETER_LIST
-                );
-                parameterList.setFather (child);
-                parameterList = directoryRepo.save (parameterList);
-
                 child.addChild (brandList);
-                child.addChild (parameterList);
-            }
-
-            //проверка что отец BRAND_LIST
-            if(fatherDirectoryType.equals (DirectoryType.BRAND_LIST.toString ())){
-                child.setDirectoryType (DirectoryType.BRAND.toString ());
             }
 
             //проверка что отец PARAMETER_LIST
             if(fatherDirectoryType.equals (DirectoryType.PARAMETER_LIST.toString ())){
                 child.setDirectoryType (DirectoryType.PARAMETER.toString ());
-            }
-
-            //проверка что отец PARAMETER_LIST
-            if(fatherDirectoryType.equals (DirectoryType.PARAMETER.toString ())){
-                child.setDirectoryType (DirectoryType.PARAMETER_VALUE.toString ());
             }
 
             child = directoryRepo.save (child);
