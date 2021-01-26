@@ -23,9 +23,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Predicate;
 
-import static nikolaiev.v.o.shop.util.LinkedDirectoryUtils.dislinkDirectories;
-import static nikolaiev.v.o.shop.util.LinkedDirectoryUtils.linkingDirectoryToDirectories;
+import static nikolaiev.v.o.shop.util.LinkedDirectoryUtils.*;
 
 @Service
 public class ProductService {
@@ -66,8 +66,17 @@ public class ProductService {
         /*//добавляем фото к товару
         addPhotosToProduct (product, files);*/
 
+        //получить список директорий товара с БД
+        final Set<LinkedDirectory> directoriesFromDB = directoryService.getDirectoriesCopyFromDB (product.getDirectories ());
+
+        //условие которое должна выполнить директория
+        Predicate<LinkedDirectory> isDirectorySuitable = getDirectoryPredicate ();
+
+        //список директорий которые выполняют условие
+        Set<LinkedDirectory> checkedDirectories = checkDirectories (directoriesFromDB, isDirectorySuitable);
+
         //добавить директории к товару
-        product = directoryService.addDirectoriesToProduct(product.getDirectories (), product);
+        product = directoryService.addDirectoriesToProduct(checkedDirectories, product);
 
         //устонавливаем время добавления
         product.setCreationDate (LocalDateTime.now ());
