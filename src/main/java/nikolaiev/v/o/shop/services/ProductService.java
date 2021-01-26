@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static nikolaiev.v.o.shop.util.LinkedDirectoryUtils.dislinkDirectories;
-import static nikolaiev.v.o.shop.util.LinkedDirectoryUtils.linkingDirectories;
+import static nikolaiev.v.o.shop.util.LinkedDirectoryUtils.linkingDirectoryToDirectories;
 
 @Service
 public class ProductService {
@@ -76,13 +76,15 @@ public class ProductService {
         final Product finalProduct = productRepo.save(product);
 
         //добавляем товар из бд к тегам(директориям)
-        finalProduct.getDirectories ().forEach (directory -> {
-            directoryService.addProductToDirectory (finalProduct, directory);
-        });
+        directoryService.addProductToDirectories (finalProduct, finalProduct.getDirectories ());
+
+        //связать директории между собой
+        directoryService.linkingDirectories(finalProduct.getDirectories ());
 
         return finalProduct;
 
     }
+
 
     //добавляем фото к товару
     private void addPhotosToProduct (Product product, Optional<MultipartFile[]> files) {
@@ -262,15 +264,13 @@ public class ProductService {
                 //связываем только те директории у которых тип PARAMETER или BRAND
                 if(
                         directory.getDirectoryType ().equals (DirectoryType.PARAMETER.toString ())
-                                || directory.getDirectoryType ().equals (DirectoryType.BRAND.toString ())
                 ){
                     //связываем список старых новых тегов newdirectorys, с тегом newdirectorys
-                    linkingDirectories (newdirectorys, directory);
+                    linkingDirectoryToDirectories (directory, newdirectorys);
 
                     //связываем список старых тегов oldNeededDirectories, с тегом newdirectorys
-                    linkingDirectories (oldNeededDirectories, directory);
+                    linkingDirectoryToDirectories (directory, oldNeededDirectories);
                 }
-
 
                 //добавляем продукт
                 directory.addProduct (productFromDb);
@@ -287,7 +287,7 @@ public class ProductService {
             //добавляем связи в старыми тегов oldNeededDirectories с новыми тегами newdirectorys
             oldNeededDirectories.forEach (directory -> {
                 //связываем список новых тегов newdirectorys, с тегом oldNeededDirectories
-                linkingDirectories (newdirectorys, directory);
+                linkingDirectoryToDirectories (directory, newdirectorys);
 
                 //обновляем directory в БД
                 directoryRepo.save (directory);
