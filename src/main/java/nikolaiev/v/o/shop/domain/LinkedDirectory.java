@@ -61,14 +61,30 @@ public class LinkedDirectory {
     public LinkedDirectory () {
     }
 
-
     /**
      * Создать директориию у которой тип и имя одинаковые
-     * @param directoryType тип категории
+     * @param directoryType тип директории
      */
     public LinkedDirectory (Enum<DirectoryType> directoryType) {
         this.id = 0l;
         this.name = directoryType.toString ();
+        this.directoryType = directoryType.toString ();
+        this.children = new HashSet<> ();
+        this.relatedDirectories = new HashSet<> ();
+        this.relatedDirectoryIds = new HashSet<> ();
+        this.father = null;
+        this.products = new HashSet<> ();
+        this.productsCount = 0l;
+    }
+
+    /**
+     * Создать директориию
+     * @param directoryType тип директории
+     * @param directoryName имя директории
+     */
+    public LinkedDirectory (Enum<DirectoryType> directoryType, String directoryName) {
+        this.id = 0l;
+        this.name = directoryName;
         this.directoryType = directoryType.toString ();
         this.children = new HashSet<> ();
         this.relatedDirectories = new HashSet<> ();
