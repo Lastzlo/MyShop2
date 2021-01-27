@@ -134,11 +134,15 @@ public class LinkedDirectoryUtils {
      * @return список директорий которые выполняют условие
      */
     public static Set<LinkedDirectory> checkDirectories (Set<LinkedDirectory> directories, Predicate<LinkedDirectory> isDirectorySuitable) {
+
+        //список директорий которые выполняют условие
         Set<LinkedDirectory> resultSet = new HashSet<> ();
 
         directories.forEach (directory -> {
                     //преверить выполнение условия
-                    if(isDirectorySuitable.test (directory)){
+                    if(isDirectorySuitable
+                            .test (directory)
+                    ){
                         //добавить в resultSet
                         resultSet.add (directory);
                     }
