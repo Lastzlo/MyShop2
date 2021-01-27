@@ -166,6 +166,8 @@ public class ProductService {
             //товар из бд
             final Product productFromDb = optionalProductFromDb.get ();
 
+            //обновить информацию о товаре
+            //скопировать заданые значения из product в productFromDb
             BeanUtils.copyProperties (product, productFromDb, "id", "photos", "photoToDelete", "directories","creationDate");
 
             //обновляем теги товара
