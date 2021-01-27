@@ -346,21 +346,6 @@ public class LinkedDirectoryService {
      * @param directories список директорий
      */
     public void linkingDirectories (Set<LinkedDirectory> directories) {
-        directories.forEach (directory -> {
-            // связываем список директорий с деректорией
-            linkingDirectoryToDirectories(directory, directories);
-
-            //сохраняем директорию в БД
-            directoryRepo.save (directory);
-        });
-    }
-
-    /**
-     * Связывает список директорий между собой
-     *
-     * @param directories список директорий
-     */
-    public void linkingDirectories2 (Set<LinkedDirectory> directories) {
 
         //условие при котором тип директории подходит чтобы ее добавить к другим директориям
         Predicate<LinkedDirectory> isDirectorySuitable = getPredicateForAddDirectoryToOtherDirectory ();
