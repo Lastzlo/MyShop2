@@ -85,7 +85,7 @@ public class ProductService {
         directoryService.addProductToDirectories (finalProduct, finalProduct.getDirectories ());
 
         //связать директории между собой
-        directoryService.linkingDirectories2(finalProduct.getDirectories ());
+        directoryService.linkingDirectories(finalProduct.getDirectories ());
 
         return finalProduct;
 
