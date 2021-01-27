@@ -72,7 +72,7 @@ public class ProductControllerIntegrationTest {
 
                 // Validate the returned fields
                 .andExpect (jsonPath ("$", hasSize (1)))
-                .andExpect (jsonPath ("$[0].id", is(3)))
+                .andExpect (jsonPath ("$[0].id", is(20)))
                 .andExpect (jsonPath ("$[0].productName", is("Apple iPhone 10")))
                 .andExpect (jsonPath ("$[0].productDiscription", nullValue ()))
                 .andExpect (jsonPath ("$[0].photos", hasSize (0)))
@@ -128,7 +128,7 @@ public class ProductControllerIntegrationTest {
 
         Product resultProduct = objectMapper.readValue(resultJson, Product.class);
 
-        assertEquals (10l, resultProduct.getId ());
+        assertEquals (50l, resultProduct.getId ());
         assertEquals (productToPost.getProductName (), resultProduct.getProductName ());
         assertEquals (productToPost.getPhotos (), resultProduct.getPhotos ());
         assertEquals (productToPost.getDirectories (), resultProduct.getDirectories ());
@@ -142,7 +142,7 @@ public class ProductControllerIntegrationTest {
     //после теста выполнить очистку БД
     @Sql(value = {"/create-product-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateProduct() throws Exception {
-        String jsonRequestText = "{\"id\":3,\"productName\":\"Samsung s5\",\"productDiscription\":null,\"photos\":[],\"directories\":[],\"price\":null,\"creationDate\":null}";
+        String jsonRequestText = "{\"id\":20,\"productName\":\"Samsung s5\",\"productDiscription\":null,\"photos\":[],\"directories\":[],\"price\":null,\"creationDate\":null}";
 
         MockMultipartFile jsonFile = new MockMultipartFile (
                 "product",
@@ -150,7 +150,7 @@ public class ProductControllerIntegrationTest {
                 "application/json",
                 jsonRequestText.getBytes());
 
-        String jsonResponseText = "{\"id\":3,\"productName\":\"Samsung s5\",\"productDiscription\":null,\"photos\":[],\"directories\":[],\"price\":null,\"creationDate\":null}";
+        String jsonResponseText = "{\"id\":20,\"productName\":\"Samsung s5\",\"productDiscription\":null,\"photos\":[],\"directories\":[],\"price\":null,\"creationDate\":null}";
 
         MockMultipartHttpServletRequestBuilder builder =
                 MockMvcRequestBuilders.multipart ("/product");
@@ -177,7 +177,7 @@ public class ProductControllerIntegrationTest {
     //после теста выполнить очистку БД
     @Sql(value = {"/create-product-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void deleteProduct() throws Exception {
-        long id = 3;
+        long id = 20;
 
         this.mockMvc.perform (MockMvcRequestBuilders.delete ("/product/"+id))
                 .andDo (print ())
