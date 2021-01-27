@@ -24,12 +24,6 @@ public class DirectoryController {
     @Autowired
     private LinkedDirectoryService directoryService;
 
-    /*@GetMapping("getCore")
-    @JsonView(Views.FullLinkedDirectory.class)
-    public LinkedDirectory getCore(){
-        return directoryService.getCore();
-    }*/
-
     @GetMapping("/getCore")
     @JsonView(Views.FullLinkedDirectory.class)
     public ResponseEntity<LinkedDirectory> getCore(){
@@ -52,6 +46,9 @@ public class DirectoryController {
     @GetMapping("{id}")
     @JsonView(Views.FullLinkedDirectory.class)
     public LinkedDirectory getOne(@PathVariable String id){
+        logger.info("DirectoryController.getOne() is executed");
+        logger.info("Received id: " +
+                "id: " + id);
         return directoryService.getOne(id);
     }
 
@@ -60,6 +57,9 @@ public class DirectoryController {
     public LinkedDirectory create(
             @RequestBody LinkedDirectory linkedDirectory
     ){
+        logger.info("DirectoryController.create() is executed");
+        logger.info("Received LinkedDirectory: " +
+                "name: " + linkedDirectory.getName ());
         return directoryService.create (linkedDirectory);
     }
 
@@ -69,11 +69,19 @@ public class DirectoryController {
             @PathVariable String id,
             @RequestBody LinkedDirectory directory
     ){
+        logger.info("DirectoryController.update() is executed");
+        logger.info("Received id: " +
+                "id: " + id);
+        logger.info("Received LinkedDirectory: " +
+                "name: " + directory.getName ());
         return directoryService.update (id, directory);
     }
 
     @DeleteMapping("{id}")
     public void delete(@PathVariable String id){
+        logger.info("DirectoryController.delete() is executed");
+        logger.info("Received id: " +
+                "id: " + id);
         directoryService.delete (id);
     }
 
