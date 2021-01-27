@@ -61,7 +61,7 @@ public class ProductService {
 
     //сохраняем товар с картинками
     public Product saveProduct (Product product, Optional<MultipartFile[]> files) {
-        //сюда можно добавить проверку полей продукта
+        //сюда можно добавить проверку полей товара
 
         /*//добавляем фото к товару
         addPhotosToProduct (product, files);*/
@@ -100,7 +100,7 @@ public class ProductService {
         //сохраняем файлы на сервере
         Set<Photo> photosSet = saveFilesOnServer (product, files);
 
-        //добавляем к продукту все фото
+        //добавляем к товару все фото
         photosSet.forEach (product::addPhoto);
 
     }
@@ -203,10 +203,10 @@ public class ProductService {
                 savePhotoSet.forEach (productFromDb::addPhoto);
             }*/
 
-            //сохраняем продукт в бд
+            //сохраняем товару в бд
             return productRepo.save (productFromDb);
         } else {
-            //нужно обработать ответ если вдруг небыло такого продукта
+            //нужно обработать ответ если вдруг небыло такого товара
             return null;
         }
     }
@@ -268,7 +268,7 @@ public class ProductService {
             //новые теги которые еще не имеют связей, не обработаные теги
             Set<LinkedDirectory> newdirectorys = Sets.difference(recivedDirectories, oldNeededDirectories);
 
-            //добавляем связи в новых тегов newdirectorys с новыми newdirectorys, старыми тегами oldNeededDirectories, а также с продуктами
+            //добавляем связи в новых тегов newdirectorys с новыми newdirectorys, старыми тегами oldNeededDirectories, а также с товарами
             newdirectorys.forEach (directory -> {
                 //связываем только те директории у которых тип PARAMETER или BRAND
                 if(
@@ -281,11 +281,11 @@ public class ProductService {
                     linkingDirectoryToDirectories (directory, oldNeededDirectories);
                 }
 
-                //добавляем продукт
+                //добавляем товар
                 directory.addProduct (productFromDb);
                 //добавляем к товару тег
                 productFromDb.addDirectory (directory);
-                //обновляем количество продуктов связных с тегом
+                //обновляем количество товаров связных с тегом
                 directory.setProductsCount ((long) directory.getProducts ().size ());
 
 
@@ -316,10 +316,10 @@ public class ProductService {
         //проверка есть ли такой товар в БД
         productRepo.findById (id).ifPresent (
                 product -> {
-                    //удаляем связь директорий с продуктом
+                    //удаляем связь директорий с товаром
                     product.getDirectories ().forEach (
                             directory -> {
-                                //удалить связь директории с продуктом
+                                //удалить связь директории с товаром
                                 directory.deleteProduct (product);
                                 //обновить счетчик количества привязаных товаров к тегу
                                 directory.setProductsCount ((long) directory.getProducts ().size ());
@@ -336,11 +336,11 @@ public class ProductService {
                     //нет необходимости ведь удаляем product из бд
                     //product.getDirectories ().clear ();
 
-                    //заготовка для удаления фото продукта
-                    /*//удаляем связь между продуктом и фотографиями
+                    //заготовка для удаления фото товара
+                    /*//удаляем связь между товаром и фотографиями
 
-                    //создать копию массива фотографий продукта
-                    //цель: после того как уберуться связи с продуктом, необходимо удалить фотографии
+                    //создать копию массива фотографий товара
+                    //цель: после того как уберуться связи с товаром, необходимо удалить фотографии
                     final Set<Photo>
                             productPhotosCopy = new HashSet<Photo> () {{
                         addAll (.getPhotos ());
