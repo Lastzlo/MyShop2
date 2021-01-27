@@ -11,12 +11,34 @@ import java.util.function.Predicate;
  */
 public class LinkedDirectoryPredicates {
     /**
-     * @return условие при котором тип директории подходит чтобы ее добавить к другим директориям
+     * Возвращает условие при котором тип директории
+     * подходит чтобы ее добавить к другим директориям
+     *
+     * @return условие
      */
     public static Predicate<LinkedDirectory> getPredicateForAddDirectoryToOtherDirectory (){
         //условие
         Predicate<LinkedDirectory> isDirectorySuitable = linkedDirectory -> {
             return linkedDirectory.getDirectoryType ().equals (DirectoryType.PARAMETER.toString ());
+        };
+
+        return isDirectorySuitable;
+    }
+
+    /**
+     * Возвращает условие которое должна выполнить директория
+     * чтобы ее можно было добавить к товару
+     *
+     * @return условие
+     */
+    public static Predicate<LinkedDirectory> getDirectoryPredicateToAddDirectoryToProduct (){
+        //условие
+        Predicate<LinkedDirectory> isDirectorySuitable = linkedDirectory -> {
+            return (linkedDirectory
+                    .getDirectoryType ().equals (DirectoryType.CATEGORY.toString ()))
+                    ||
+                    (linkedDirectory
+                            .getDirectoryType ().equals (DirectoryType.PARAMETER.toString ()));
         };
 
         return isDirectorySuitable;
