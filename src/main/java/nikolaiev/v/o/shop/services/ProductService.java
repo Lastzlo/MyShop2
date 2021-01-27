@@ -1,5 +1,6 @@
 package nikolaiev.v.o.shop.services;
 
+import com.google.common.collect.Sets;
 import nikolaiev.v.o.shop.domain.DirectoryType;
 import nikolaiev.v.o.shop.domain.LinkedDirectory;
 import nikolaiev.v.o.shop.domain.Photo;
@@ -7,24 +8,20 @@ import nikolaiev.v.o.shop.domain.Product;
 import nikolaiev.v.o.shop.repos.LinkedDirectoryRepo;
 import nikolaiev.v.o.shop.repos.PhotoRepo;
 import nikolaiev.v.o.shop.repos.ProductRepo;
-import com.google.common.collect.Sets;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 
+import static nikolaiev.v.o.shop.Predicates.LinkedDirectoryPredicates.getDirectoryPredicateForAddDirectoryToProduct;
 import static nikolaiev.v.o.shop.util.LinkedDirectoryUtils.*;
 
 @Service
@@ -89,6 +86,41 @@ public class ProductService {
 
         //связать директории между собой
         directoryService.linkingDirectories(finalProduct.getDirectories ());
+
+        return finalProduct;
+
+    }
+
+    //сохраняем товар с картинками
+    public Product saveProduct2 (Product product, Optional<MultipartFile[]> files) {
+        //сюда можно добавить проверку полей товара
+
+        /*//добавляем фото к товару
+        addPhotosToProduct (product, files);*/
+
+        //получить список директорий товара с БД
+        final Set<LinkedDirectory> directoriesFromDB = directoryService.getDirectoriesCopyFromDB (product.getDirectories ());
+
+        //условие которое должна выполнить директория чтобы ее можно было добавить к товару
+        Predicate<LinkedDirectory> isDirectorySuitable = getDirectoryPredicateForAddDirectoryToProduct ();
+
+        //список директорий которые выполняют условие
+        Set<LinkedDirectory> checkedDirectories = checkDirectories (directoriesFromDB, isDirectorySuitable);
+
+        //добавить директории к товару
+        product = directoryService.addDirectoriesToProduct(checkedDirectories, product);
+
+        //устонавливаем время добавления
+        product.setCreationDate (LocalDateTime.now ());
+
+        //сохраняем товар в бд
+        final Product finalProduct = productRepo.save(product);
+
+        //добавляем товар из бд к тегам(директориям)
+        directoryService.addProductToDirectories (finalProduct, finalProduct.getDirectories ());
+
+        //связать директории между собой
+        directoryService.linkingDirectories2(finalProduct.getDirectories ());
 
         return finalProduct;
 
