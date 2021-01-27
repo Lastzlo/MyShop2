@@ -54,7 +54,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void saveProductWithDirectories2 () {
+    void saveProductWithDirectories () {
         //given
         //directory1
         LinkedDirectory directory1 = new LinkedDirectory (
