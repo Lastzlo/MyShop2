@@ -258,4 +258,73 @@ class LinkedDirectoryServiceTest {
 
 
     }
+
+    @Test
+    public void linkingDirectories2(){
+        //given
+        //some directories
+        LinkedDirectory directory1 = new LinkedDirectory (){{
+            this.setId (1l);
+            this.setName ("Good Directory");
+            this.setDirectoryType (DirectoryType.PARAMETER.toString ());
+            this.setRelatedDirectories (new HashSet<> ());
+            this.setRelatedDirectoryIds (new HashSet<> ());
+        }};
+        LinkedDirectory directory2 = new LinkedDirectory (){{
+            this.setId (2l);
+            this.setName ("Good Directory");
+            this.setDirectoryType (DirectoryType.PARAMETER.toString ());
+            this.setRelatedDirectories (new HashSet<> ());
+            this.setRelatedDirectoryIds (new HashSet<> ());
+        }};
+        LinkedDirectory directory3 = new LinkedDirectory (){{
+            this.setId (3l);
+            this.setName ("Bad Directory");
+            this.setDirectoryType (DirectoryType.CATEGORY.toString ());
+            this.setRelatedDirectories (new HashSet<> ());
+            this.setRelatedDirectoryIds (new HashSet<> ());
+        }};
+        LinkedDirectory directory4 = new LinkedDirectory (){{
+            this.setId (4l);
+            this.setName ("Bad Directory");
+            this.setDirectoryType (DirectoryType.CATEGORY_LIST.toString ());
+            this.setRelatedDirectories (new HashSet<> ());
+            this.setRelatedDirectoryIds (new HashSet<> ());
+        }};
+
+        Set<LinkedDirectory> directorySet = new HashSet<LinkedDirectory> (){{
+            add (directory1);
+            add (directory2);
+            add (directory3);
+            add (directory4);
+        }};
+
+
+        //when
+        directoryService.linkingDirectories2 (directorySet);
+
+
+        //then
+        //test directory1
+        Assertions.assertEquals (1, directory1.getRelatedDirectories ().size (),  "directory1 related directories size should be 1");
+        Assertions.assertEquals (1, directory1.getRelatedDirectoryIds ().size (), "directory1 related directories Id size should be 1");
+        Assertions.assertTrue (directory1.getRelatedDirectories ().contains (directory2), "directory1 related directories should be contain directory2");
+
+        Assertions.assertFalse (directory1.getRelatedDirectories ().contains (directory1), "directory1 related directories should not contain directory1");
+
+        //test directory3
+        Assertions.assertEquals (0, directory3.getRelatedDirectories ().size (),  "directory3 related directories size should be 0");
+        Assertions.assertEquals (0, directory3.getRelatedDirectoryIds ().size (), "directory3 related directories Id size should be 0");
+
+
+
+
+
+
+
+
+
+
+
+    }
 }

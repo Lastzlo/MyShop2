@@ -11,7 +11,10 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
+import static nikolaiev.v.o.shop.Predicates.LinkedDirectoryPredicates.getPredicateForAddDirectoryToOtherDirectory;
+import static nikolaiev.v.o.shop.util.LinkedDirectoryUtils.checkDirectories;
 import static nikolaiev.v.o.shop.util.LinkedDirectoryUtils.linkingDirectoryToDirectories;
 
 @Service
@@ -346,6 +349,29 @@ public class LinkedDirectoryService {
         directories.forEach (directory -> {
             // связываем список директорий с деректорией
             linkingDirectoryToDirectories(directory, directories);
+
+            //сохраняем директорию в БД
+            directoryRepo.save (directory);
+        });
+    }
+
+    /**
+     * Связывает список директорий между собой
+     *
+     * @param directories список директорий
+     */
+    public void linkingDirectories2 (Set<LinkedDirectory> directories) {
+
+        //условие при котором тип директории подходит чтобы ее добавить к другим директориям
+        Predicate<LinkedDirectory> isDirectorySuitable = getPredicateForAddDirectoryToOtherDirectory ();
+
+        //список директорий которые выполняют условие
+        Set<LinkedDirectory> checkedDirectories = checkDirectories (directories, isDirectorySuitable);
+
+        checkedDirectories.forEach (directory -> {
+
+            //связываем список подходящих директорий с деректорией
+            linkingDirectoryToDirectories(directory, checkedDirectories);
 
             //сохраняем директорию в БД
             directoryRepo.save (directory);
