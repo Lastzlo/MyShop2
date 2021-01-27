@@ -66,41 +66,6 @@ public class ProductService {
         //получить список директорий товара с БД
         final Set<LinkedDirectory> directoriesFromDB = directoryService.getDirectoriesCopyFromDB (product.getDirectories ());
 
-        //условие которое должна выполнить директория
-        Predicate<LinkedDirectory> isDirectorySuitable = getDirectoryPredicate ();
-
-        //список директорий которые выполняют условие
-        Set<LinkedDirectory> checkedDirectories = checkDirectories (directoriesFromDB, isDirectorySuitable);
-
-        //добавить директории к товару
-        product = directoryService.addDirectoriesToProduct(checkedDirectories, product);
-
-        //устонавливаем время добавления
-        product.setCreationDate (LocalDateTime.now ());
-
-        //сохраняем товар в бд
-        final Product finalProduct = productRepo.save(product);
-
-        //добавляем товар из бд к тегам(директориям)
-        directoryService.addProductToDirectories (finalProduct, finalProduct.getDirectories ());
-
-        //связать директории между собой
-        directoryService.linkingDirectories(finalProduct.getDirectories ());
-
-        return finalProduct;
-
-    }
-
-    //сохраняем товар с картинками
-    public Product saveProduct2 (Product product, Optional<MultipartFile[]> files) {
-        //сюда можно добавить проверку полей товара
-
-        /*//добавляем фото к товару
-        addPhotosToProduct (product, files);*/
-
-        //получить список директорий товара с БД
-        final Set<LinkedDirectory> directoriesFromDB = directoryService.getDirectoriesCopyFromDB (product.getDirectories ());
-
         //условие которое должна выполнить директория чтобы ее можно было добавить к товару
         Predicate<LinkedDirectory> isDirectorySuitable = getDirectoryPredicateForAddDirectoryToProduct ();
 
