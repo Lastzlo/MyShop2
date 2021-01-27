@@ -206,65 +206,6 @@ class LinkedDirectoryServiceTest {
         //some directories
         LinkedDirectory directory1 = new LinkedDirectory (){{
             this.setId (1l);
-            this.setName ("Good Directory1");
-            this.setDirectoryType (DirectoryType.PARAMETER.toString ());
-            this.setRelatedDirectories (new HashSet<> ());
-            this.setRelatedDirectoryIds (new HashSet<> ());
-        }};
-        LinkedDirectory directory2 = new LinkedDirectory (){{
-            this.setId (2l);
-            this.setName ("Good Directory2");
-            this.setDirectoryType (DirectoryType.PARAMETER.toString ());
-            this.setRelatedDirectories (new HashSet<> ());
-            this.setRelatedDirectoryIds (new HashSet<> ());
-        }};
-        LinkedDirectory directory3 = new LinkedDirectory (){{
-            this.setId (4l);
-            this.setName ("Good Directory3");
-            this.setDirectoryType (DirectoryType.PARAMETER.toString ());
-            this.setRelatedDirectories (new HashSet<> ());
-            this.setRelatedDirectoryIds (new HashSet<> ());
-        }};
-
-        Set<LinkedDirectory> directorySet = new HashSet<LinkedDirectory> (){{
-            add (directory1);
-            add (directory2);
-            add (directory3);
-        }};
-
-
-        //when
-        directoryService.linkingDirectories (directorySet);
-
-        //then
-        //test directory1
-        Assertions.assertEquals (2, directory1.getRelatedDirectories ().size (),  "directory1 related directories size should be 2");
-        Assertions.assertEquals (2, directory1.getRelatedDirectoryIds ().size (), "directory1 related directories Id size should be 2");
-        Assertions.assertTrue (directory1.getRelatedDirectories ().contains (directory2), "directory1 related directories should be contain directory2");
-
-        Assertions.assertFalse (directory1.getRelatedDirectories ().contains (directory1), "directory1 related directories should not contain directory1");
-
-        //test directory2
-        Assertions.assertEquals (2, directory2.getRelatedDirectories ().size (),  "directory2 related directories size should be 2");
-        Assertions.assertEquals (2, directory2.getRelatedDirectoryIds ().size (), "directory2 related directories Id size should be 2");
-        Assertions.assertTrue (directory2.getRelatedDirectories ().contains (directory3), "directory2 related directories should be contain directory3");
-
-
-
-
-
-
-
-
-
-    }
-
-    @Test
-    public void linkingDirectories2(){
-        //given
-        //some directories
-        LinkedDirectory directory1 = new LinkedDirectory (){{
-            this.setId (1l);
             this.setName ("Good Directory");
             this.setDirectoryType (DirectoryType.PARAMETER.toString ());
             this.setRelatedDirectories (new HashSet<> ());
@@ -301,7 +242,7 @@ class LinkedDirectoryServiceTest {
 
 
         //when
-        directoryService.linkingDirectories2 (directorySet);
+        directoryService.linkingDirectories(directorySet);
 
 
         //then
