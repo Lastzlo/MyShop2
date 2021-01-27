@@ -54,81 +54,6 @@ class ProductServiceTest {
     }
 
     @Test
-    void saveProductWithDirectories () {
-        //given
-        //directory1
-        LinkedDirectory directory1 = new LinkedDirectory (
-                DirectoryType.PARAMETER,
-                "directory1"
-        );
-        directory1.setId (1l);
-        // Setup mock scenery
-        Mockito.when (directoryRepo.findById (directory1.getId ()))
-                .thenReturn (Optional.of (directory1));
-
-        //directory2
-        LinkedDirectory directory2 = new LinkedDirectory (
-                DirectoryType.PARAMETER,
-                "directory2"
-        );
-        directory2.setId (2l);
-        // Setup mock scenery
-        Mockito.when (directoryRepo.findById (directory2.getId ()))
-                .thenReturn (Optional.of (directory2));
-
-        //directory3
-        LinkedDirectory directory3 = new LinkedDirectory (
-                DirectoryType.PARAMETER_LIST,
-                "directory3"
-        );
-        directory3.setId (3l);
-        // Setup mock scenery
-        Mockito.when (directoryRepo.findById (directory3.getId ()))
-                .thenReturn (Optional.of (directory3));
-
-        //directories
-        Set<LinkedDirectory> directories = new HashSet<LinkedDirectory> (){{
-            add (directory1);
-            add (directory2);
-            add (directory3);
-        }};
-
-        //product
-        Product expectedProduct = new Product (){{
-            this.setId ((long) 0);
-            this.setProductName ("no name");
-            this.setProductDiscription ("no productDiscription");
-            this.setPhotos (new HashSet<> ());
-            this.setDirectories (directories);
-        }};
-        // Setup mock scenery
-        Mockito.when (productRepo.save (expectedProduct))
-                .thenReturn (expectedProduct);
-
-        //files
-        Optional<MultipartFile[]> files = Optional.empty ();
-
-
-        //when
-        final Product actualProduct = productService.saveProduct (expectedProduct, files);
-
-
-        //then
-        //test product
-        Assertions.assertEquals (expectedProduct, actualProduct, "expectedProduct and actualProduct should be equal");
-        Assertions.assertNotNull (expectedProduct.getCreationDate (), "expectedProduct.getCreationDate () should be not Null");
-
-        //test directory1
-        Assertions.assertEquals (1, directory1.getProductsCount (), " directory1.getProductsCount () should be 1");
-        Assertions.assertTrue (directory1.getProducts ().contains (expectedProduct), " directory1.getProducts () should be contain expectedProduct");
-        Assertions.assertEquals (1, directory1.getRelatedDirectories ().size (), " directory1.getRelatedDirectories ().size () should be 1");
-        Assertions.assertEquals (1, directory1.getRelatedDirectoryIds ().size (), " directory1.getRelatedDirectoryIds ().size () should be 1");
-        Assertions.assertTrue (directory1.getRelatedDirectories ().contains (directory2), " directory1.getRelatedDirectories () should be contain directory2");
-        Assertions.assertFalse (directory1.getRelatedDirectories ().contains (directory3), " directory1.getRelatedDirectories () should not contain directory3");
-
-    }
-
-    @Test
     void saveProductWithDirectories2 () {
         //given
         //directory1
@@ -193,7 +118,7 @@ class ProductServiceTest {
 
 
         //when
-        final Product actualProduct = productService.saveProduct2 (expectedProduct, files);
+        final Product actualProduct = productService.saveProduct (expectedProduct, files);
 
 
         //then
