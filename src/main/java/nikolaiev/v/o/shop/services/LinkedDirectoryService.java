@@ -53,7 +53,7 @@ public class LinkedDirectoryService {
 
     //создает директорию,
     public LinkedDirectory create(LinkedDirectory linkedDirectory){
-        LinkedDirectory father = directoryRepo.getOne (linkedDirectory.getFather ().getId ());
+        Optional<LinkedDirectory> optionalFatherDirectory = directoryRepo.findById(Long.valueOf(linkedDirectory.getFather ().getId ()));
 
         //устонавливаем контейнер для связанных дерикторий
         linkedDirectory.setRelatedDirectories (new HashSet<> ());
@@ -61,7 +61,8 @@ public class LinkedDirectoryService {
         LinkedDirectory child = linkedDirectory;
 
         //нужна нормальна обработка в виде Optional
-        if(father!=null){
+        if(optionalFatherDirectory.isPresent ()){
+            LinkedDirectory father = optionalFatherDirectory.get ();
             String fatherDirectoryType = father.getDirectoryType ();
 
             child.setFather (father);
@@ -81,6 +82,11 @@ public class LinkedDirectoryService {
                 brandList = directoryRepo.save (brandList);
 
                 child.addChild (brandList);
+            }
+
+            //проверка что отец CATEGORY
+            if(fatherDirectoryType.equals (DirectoryType.CATEGORY.toString ())){
+                child.setDirectoryType (DirectoryType.PARAMETER_LIST.toString ());
             }
 
             //проверка что отец PARAMETER_LIST
