@@ -31,7 +31,7 @@ public class LinkedDirectoryPredicates {
      *
      * @return условие
      */
-    public static Predicate<LinkedDirectory> getDirectoryPredicateToAddDirectoryToProduct (){
+    public static Predicate<LinkedDirectory> getDirectoryPredicateForAddDirectoryToProduct (){
         //условие
         Predicate<LinkedDirectory> isDirectorySuitable = linkedDirectory -> {
             return (linkedDirectory
