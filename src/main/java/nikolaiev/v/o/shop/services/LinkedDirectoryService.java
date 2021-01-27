@@ -101,7 +101,8 @@ public class LinkedDirectoryService {
 
             return child;
         } else {
-            return directoryRepo.save (linkedDirectory);
+            //return Empty LinkedDirectory
+            return new LinkedDirectory ();
         }
     }
 
