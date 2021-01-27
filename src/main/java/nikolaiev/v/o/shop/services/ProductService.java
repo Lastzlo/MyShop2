@@ -203,8 +203,8 @@ public class ProductService {
             //сохраняем товару в бд
             return productRepo.save (productFromDb);
         } else {
-            //нужно обработать ответ если вдруг небыло такого товара
-            return null;
+            //вернуть тот же товар если не было такого в бд
+            return product;
         }
     }
 
