@@ -3,10 +3,13 @@ package nikolaiev.v.o.shop.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nikolaiev.v.o.shop.controller.ProductController;
+import nikolaiev.v.o.shop.domain.DirectoryType;
+import nikolaiev.v.o.shop.domain.LinkedDirectory;
 import nikolaiev.v.o.shop.domain.Product;
 import org.assertj.core.api.Assertions;
 import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcAutoConfiguration;
@@ -24,6 +27,7 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -133,6 +137,86 @@ public class ProductControllerIntegrationTest {
         assertEquals (productToPost.getPhotos (), resultProduct.getPhotos ());
         assertEquals (productToPost.getDirectories (), resultProduct.getDirectories ());
         assertNotNull (resultProduct.getCreationDate ());
+    }
+
+    @Test
+    //перед тестом выполнить очистку и заполнение БД
+    @Sql(value = {"/create-product-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    //после теста выполнить очистку БД
+    @Sql(value = {"/create-product-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void addProductWithDirectories() throws Exception {
+        //given
+        //directory1
+        LinkedDirectory directory1 = new LinkedDirectory ();
+        directory1.setId (1l);
+
+        //directory2
+        LinkedDirectory directory2 = new LinkedDirectory ();
+        directory2.setId (2l);
+
+        //directory3
+        LinkedDirectory directory3 = new LinkedDirectory ();
+        directory3.setId (3l);
+
+        //directory4
+        LinkedDirectory directory4 = new LinkedDirectory ();
+        directory4.setId (4l);
+
+        //directories
+        Set<LinkedDirectory> directories = new HashSet<LinkedDirectory> (){{
+            add (directory1);
+            add (directory2);
+            add (directory3);
+            add (directory4);
+        }};
+
+
+        Product productToPost = new Product (){{
+            this.setProductName ("Xiaomi mi 5");
+            this.setPhotos (new HashSet<> ());
+            this.setDirectories (directories);
+        }};
+        byte[] productToPostAsBytes = objectMapper.writeValueAsBytes (productToPost);
+
+        MockMultipartFile jsonFile = new MockMultipartFile (
+                "product",
+                "",
+                "application/json",
+                productToPostAsBytes);
+
+        MockMultipartFile firstFile = new MockMultipartFile(
+                "files",
+                "filename.txt",
+                "text/plain",
+                "some xml".getBytes());
+
+        // Execute the POST request
+        String resultJson= this.mockMvc.perform (MockMvcRequestBuilders.multipart ("/product")
+                .file (jsonFile)
+                .file (firstFile))
+
+                //вывести результат в консоль
+                .andDo (print ())
+
+                // Validate the response code and content type
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+
+                // Validate headers
+                .andExpect(header().string(HttpHeaders.LOCATION, "/product"))
+
+                .andReturn ()
+                .getResponse ()
+                .getContentAsString ();
+
+        Product resultProduct = objectMapper.readValue(resultJson, Product.class);
+
+        assertEquals (50l, resultProduct.getId (),"resultProduct.getId () should be 50");
+        assertEquals (productToPost.getProductName (), resultProduct.getProductName ());
+        assertNotEquals (productToPost.getDirectories (), resultProduct.getDirectories ());
+        assertEquals (3,resultProduct.getDirectories ().size (),"resultProduct.getDirectories ().size () should be 3");
+        assertNotNull (resultProduct.getCreationDate ());
+
     }
 
 
