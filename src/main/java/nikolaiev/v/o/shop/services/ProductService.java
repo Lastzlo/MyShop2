@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import static nikolaiev.v.o.shop.Predicates.LinkedDirectoryPredicates.getDirectoryPredicateForAddDirectoryToProduct;
+import static nikolaiev.v.o.shop.Predicates.LinkedDirectoryPredicates.getPredicateForAddDirectoryToOtherDirectory;
 import static nikolaiev.v.o.shop.util.LinkedDirectoryUtils.*;
 
 @Service
@@ -91,39 +92,55 @@ public class ProductService {
 
     }
 
-    //сохраняем товар с картинками
+    //сохранить товар директориями и файлами
     public Product saveProduct1 (Product product, Optional<MultipartFile[]> files) {
-        //сюда можно добавить проверку полей товара
+
+        //установить время добавления
+        product.setCreationDate (LocalDateTime.now ());
+
+        //получить список директорий товара
+        final Set<LinkedDirectory> productDirectories = new HashSet<LinkedDirectory> (){{
+            addAll (product.getDirectories ());
+        }};
+
+        //очистить список директорий товара
+        product.getDirectories ().clear ();
+
+        //сохранить товар в БД
+        final Product productFromDB = productRepo.save(product);
 
         /*//добавляем фото к товару
         addPhotosToProduct (product, files);*/
 
-        //получить список директорий товара с БД
-        final Set<LinkedDirectory> directoriesFromDB = directoryService.getDirectoriesCopyFromDB (product.getDirectories ());
+        //получить копию директорий с БД
+        final Set<LinkedDirectory> productDirectoriesFromDB = directoryService.getDirectoriesCopyFromDB (productDirectories);
 
         //условие которое должна выполнить директория чтобы ее можно было добавить к товару
-        Predicate<LinkedDirectory> isDirectorySuitable = getDirectoryPredicateForAddDirectoryToProduct ();
+        final Predicate<LinkedDirectory> predicateForAddDirectoryToProduct = getDirectoryPredicateForAddDirectoryToProduct ();
 
         //список директорий которые выполняют условие
-        Set<LinkedDirectory> checkedDirectories = checkDirectories (directoriesFromDB, isDirectorySuitable);
+        Set<LinkedDirectory> checkedDirectories = checkDirectories (productDirectoriesFromDB, predicateForAddDirectoryToProduct);
 
-        //добавить директории к товару
-        product = directoryService.addDirectoriesToProduct(checkedDirectories, product);
-
-        //устонавливаем время добавления
-        product.setCreationDate (LocalDateTime.now ());
-
-        //сохраняем товар в бд
-        final Product finalProduct = productRepo.save(product);
-
-        //добавляем товар из бд к тегам(директориям)
-        directoryService.addProductToDirectories (finalProduct, finalProduct.getDirectories ());
+        //условие при котором тип директории подходит чтобы ее добавить к другим директориям
+        final Predicate<LinkedDirectory> PredicateForAddDirectoryToDirectory = getPredicateForAddDirectoryToOtherDirectory ();
 
         //связать директории между собой
-        directoryService.linkingDirectories(finalProduct.getDirectories ());
+        directoryService.linkingDirectorieByPredicate(checkedDirectories,PredicateForAddDirectoryToDirectory);
+
+        //добавляем товар из бд к тегам(директориям)
+        directoryService.addProductToDirectories1 (productFromDB, checkedDirectories);
+
+        //сохранить checkedDirectories в БД
+        checkedDirectories.forEach (directory -> directoryService.update(directory));
+
+
+        //добавить директории к товару c БД
+        directoryService.addDirectoriesToProduct(checkedDirectories, productFromDB);
+
+        //сохраняем товар в бд
+        final Product finalProduct = productRepo.save(productFromDB);
 
         return finalProduct;
-
     }
 
 
