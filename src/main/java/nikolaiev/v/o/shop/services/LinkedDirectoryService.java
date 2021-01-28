@@ -341,6 +341,22 @@ public class LinkedDirectoryService {
     }
 
     /**
+     * Добавить товар в директории
+     *
+     * @param productFromDB товар с БД
+     * @param directories список директорий
+     */
+    public void addProductToDirectories1 (Product productFromDB, Set<LinkedDirectory> directories) {
+        directories.forEach (directory -> {
+            //добавляем продукт
+            directory.addProduct (productFromDB);
+
+            //обновляем количество продуктов связных с тегом
+            directory.setProductsCount ((long) directory.getProducts ().size ());
+        });
+    }
+
+    /**
      * Связывает список директорий между собой
      *
      * @param directories список директорий
