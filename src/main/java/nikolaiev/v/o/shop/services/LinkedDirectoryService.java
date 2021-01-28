@@ -363,6 +363,25 @@ public class LinkedDirectoryService {
         });
     }
 
+    /**
+     * Связывает список директорий между собой
+     *
+     * @param directories список директорий
+     * @param directoryPredicate условие при котором тип директории
+     * подходит чтобы ее добавить к другим директориям
+     */
+    public void linkingDirectorieByPredicate (Set<LinkedDirectory> directories, Predicate<LinkedDirectory> directoryPredicate) {
+
+        //список директорий которые выполняют условие
+        Set<LinkedDirectory> checkedDirectories = checkDirectories (directories, directoryPredicate);
+
+        checkedDirectories.forEach (directory -> {
+
+            //связываем список подходящих директорий с деректорией
+            linkingDirectoryToDirectories(directory, checkedDirectories);
+        });
+    }
+
     public Set<LinkedDirectory> getDirectoriesCopyFromDB (Set<LinkedDirectory> directories) {
         Set<LinkedDirectory> resultSet = new HashSet<> ();
 
