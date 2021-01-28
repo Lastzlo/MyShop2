@@ -54,7 +54,7 @@ public class ProductController {
             return ResponseEntity
                     .ok()
                     .location((new URI ("/product")))
-                    .body(productService.saveProduct(product, files));
+                    .body(productService.saveProduct1 (product, files));
         } catch (URISyntaxException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
