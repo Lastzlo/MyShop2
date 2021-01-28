@@ -109,7 +109,13 @@ public class LinkedDirectoryService {
         }
     }
 
-    public LinkedDirectory save (LinkedDirectory directory) {
+
+    /**
+     * Обновляет директорию в БД
+     * @param directory
+     * @return сохраненную директорию
+     */
+    public LinkedDirectory update (LinkedDirectory directory) {
         return directoryRepo.save (directory);
     }
 
