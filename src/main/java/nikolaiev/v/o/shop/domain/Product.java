@@ -42,7 +42,7 @@ public class Product {
 
     //дата добавления товара
     @Column(updatable = false)  //колонка не обновляемая
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")   //чтобы Джейсон отшорматировал  дату и время по нашему патерну
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")   //чтобы Джейсон отформатировал  дату и время по нашему патерну
     @JsonView(Views.FullMessage.class)
     private LocalDateTime creationDate;
 
