@@ -227,6 +227,59 @@ public class ProductService {
         }
     }
 
+    //обновляет информацию о товаре и картинки
+    public Product updateProduct1 (Product product, Optional<MultipartFile[]> files) {
+        //проверка что такой товар есть в бд
+        Optional<Product> optionalProductFromDb = productRepo.findById (product.getId ());
+
+        if(optionalProductFromDb.isPresent ()){
+            //товар из бд
+            final Product productFromDb = optionalProductFromDb.get ();
+
+            //обновить информацию о товаре
+            //скопировать заданые значения из product в productFromDb
+            BeanUtils.copyProperties (product, productFromDb, "id", "photos", "photoToDelete", "directories","creationDate");
+
+            //обновляем теги товара
+            updateProductDirectories (product, productFromDb);
+
+            //часть отвечает за обновление фотографий привязанных к товару
+            /*//проверяет есть ли ненужные фото
+            if(!product.getPhotoToDelete ().isEmpty ()){
+                //удаляем фото товара которые не используються
+                product.getPhotoToDelete ().forEach (
+                        photo -> {
+                            photoRepo.findById (photo.getId ()).ifPresent (
+                                    item -> {
+                                        //удаление фото с товара
+                                        productFromDb.deletePhoto(item);
+                                        photoRepo.delete (item);
+
+                                        //удаление фото с хранилища
+                                        new File (uploadPath + "/" + item.getName ()).delete ();
+                                    }
+                            );
+                        }
+                );
+            }
+
+            //проверяет есть ли новые фото к товару
+            if(files.isPresent ()){
+                //Получаем список сохраненных фото
+                Set<Photo> savePhotoSet = photoService.saveFiles (files);
+
+                //записываем в товар список фото
+                savePhotoSet.forEach (productFromDb::addPhoto);
+            }*/
+
+            //сохраняем товару в бд
+            return productRepo.save (productFromDb);
+        } else {
+            //вернуть тот же товар если не было такого в бд
+            return product;
+        }
+    }
+
     /**
      * Теги полученого товара устонавливает товару который хранился в бд
      *
