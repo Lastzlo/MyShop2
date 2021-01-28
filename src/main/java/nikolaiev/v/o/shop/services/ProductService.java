@@ -63,7 +63,7 @@ public class ProductService {
         //установить время добавления
         product.setCreationDate (LocalDateTime.now ());
 
-        //получить список директорий товара
+        //список директорий товара
         final Set<LinkedDirectory> productDirectories = new HashSet<LinkedDirectory> (){{
             addAll (product.getDirectories ());
         }};
@@ -86,6 +86,16 @@ public class ProductService {
         //список директорий которые выполняют условие
         Set<LinkedDirectory> checkedDirectories = checkDirectories (productDirectoriesFromDB, predicateForAddDirectoryToProduct);
 
+        //сценарий при котором нужно связать товар без директорий со списком директорий
+        scenaryIfProductFromDBHaveDirectories (productFromDB, checkedDirectories);
+
+        //сохранить товар в БД
+        final Product finalProduct = productRepo.save(productFromDB);
+
+        return finalProduct;
+    }
+
+    public void scenaryIfProductFromDBHaveDirectories (Product productFromDB, Set<LinkedDirectory> checkedDirectories) {
         //условие при котором тип директории подходит чтобы ее добавить к другим директориям
         final Predicate<LinkedDirectory> PredicateForAddDirectoryToDirectory = getPredicateForAddDirectoryToOtherDirectory ();
 
@@ -102,10 +112,9 @@ public class ProductService {
         //добавить директории к товару c БД
         directoryService.addDirectoriesToProduct1(checkedDirectories, productFromDB);
 
-        //сохраняем товар в бд
-        final Product finalProduct = productRepo.save(productFromDB);
 
-        return finalProduct;
+        //сохранить товар в бд
+        productRepo.save(productFromDB);
     }
 
 
@@ -219,7 +228,7 @@ public class ProductService {
                 savePhotoSet.forEach (productFromDb::addPhoto);
             }*/
 
-            //сохраняем товару в бд
+            //сохранить товар в БД
             return productRepo.save (productFromDb);
         } else {
             //вернуть тот же товар если не было такого в бд
