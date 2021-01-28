@@ -109,6 +109,9 @@ public class LinkedDirectoryService {
         }
     }
 
+    public LinkedDirectory save (LinkedDirectory directory) {
+        return directoryRepo.save (directory);
+    }
 
     public LinkedDirectory update(
             String id,
@@ -411,5 +414,4 @@ public class LinkedDirectoryService {
 
         return resultSet;
     }
-
 }
