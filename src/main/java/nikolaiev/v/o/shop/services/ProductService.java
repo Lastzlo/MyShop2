@@ -100,7 +100,7 @@ public class ProductService {
 
 
         //добавить директории к товару c БД
-        directoryService.addDirectoriesToProduct(checkedDirectories, productFromDB);
+        directoryService.addDirectoriesToProduct1(checkedDirectories, productFromDB);
 
         //сохраняем товар в бд
         final Product finalProduct = productRepo.save(productFromDB);
