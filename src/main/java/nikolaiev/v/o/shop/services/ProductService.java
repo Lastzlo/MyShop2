@@ -238,20 +238,21 @@ public class ProductService {
 
     //обновляет информацию о товаре и картинки
     public Product updateProduct1 (Product product, Optional<MultipartFile[]> files) {
-        //проверка что такой товар есть в бд
+        //получить копию товара с БД
         Optional<Product> optionalProductFromDb = productRepo.findById (product.getId ());
 
+        //проверка что товар существует в БД
         if(optionalProductFromDb.isPresent ()){
-            //товар из бд
+            //копия товара с БД
             final Product productFromDb = optionalProductFromDb.get ();
 
-            //обновить информацию о товаре
-            //скопировать заданые значения из product в productFromDb
-            BeanUtils.copyProperties (product, productFromDb, "id", "photos", "photoToDelete", "directories","creationDate");
+            //робота с информацией о товаре
+            updateInfoAboutProduct (product, productFromDb);
 
-            //обновляем теги товара
-            updateProductDirectories (product, productFromDb);
+            //робота с директориями
+            updateProductDirectories1 (product, productFromDb);
 
+            //робота с файлами
             //часть отвечает за обновление фотографий привязанных к товару
             /*//проверяет есть ли ненужные фото
             if(!product.getPhotoToDelete ().isEmpty ()){
@@ -281,12 +282,258 @@ public class ProductService {
                 savePhotoSet.forEach (productFromDb::addPhoto);
             }*/
 
-            //сохраняем товару в бд
+            //сохранить товар в БД
             return productRepo.save (productFromDb);
         } else {
-            //вернуть тот же товар если не было такого в бд
+            //вернуть тот же товар если не было такого в БД
             return product;
         }
+    }
+
+    public void updateProductDirectories1 (Product product, Product productFromDb) {
+        //робота с директориями
+
+        //список директорий полученого товара
+        Set<LinkedDirectory> productDirectories = new HashSet<LinkedDirectory> (){{
+            addAll (product.getDirectories ());
+        }};
+
+        //получить копию директорий с БД
+        productDirectories = directoryService.getDirectoriesCopyFromDB (productDirectories);
+
+        //условие которое должна выполнить директория чтобы ее можно было добавить к товару
+        final Predicate<LinkedDirectory> predicateForAddDirectoryToProduct =
+                getDirectoryPredicateForAddDirectoryToProduct ();
+
+        //список директорий полученого товара которые выполняют условие
+        final Set<LinkedDirectory> checkedProductDirectories =
+                checkDirectories (productDirectories, predicateForAddDirectoryToProduct);
+
+        if(checkedProductDirectories.isEmpty ()){
+
+            //убрать связть директорий и товара
+            dislinkProductFromDirectories (productFromDb, productFromDb.getDirectories ());
+
+            //сохранить директории в БД
+            productFromDb.getDirectories ().forEach (directory -> directoryService.update (directory));
+
+            //очистить список директорий
+            productFromDb.getDirectories ().clear ();
+
+            //сохранить товар в БД
+            productRepo.save (productFromDb);
+
+        } else {
+            if (productFromDb.getDirectories ().isEmpty ()){
+
+                //сценарий при котором нужно связать товар без директорий со списком директорий
+                scenaryIfProductFromDBHaveDirectories (productFromDb, checkedProductDirectories);
+
+            } else {
+
+                //сценарий при котором нужно связать товар с директориями со списком директорий
+                scenaryIfProductFromDBHaveDirectories (productFromDb, predicateForAddDirectoryToProduct, checkedProductDirectories);
+
+            }
+        }
+
+
+
+
+    }
+
+    public void scenaryIfProductFromDBHaveDirectories (Product productFromDb, Predicate<LinkedDirectory> predicateForAddDirectoryToProduct, Set<LinkedDirectory> checkedProductDirectories) {
+        //список директорий товара с БД
+        final Set<LinkedDirectory> productFromDBDirectories = new HashSet<LinkedDirectory> (){{
+            addAll (productFromDb.getDirectories ());
+        }};
+
+        //сравнить список директорий товара с БД - productFromDBDirectories
+        //и список директорий полученого товара
+        //которые выполняют условие - checkedProductDirectories
+        if (productFromDBDirectories.equals (checkedProductDirectories)){
+
+            //списки директорий равны, значит не нужно обновлять связи
+            System.out.println ("productFromDBDirectories" +
+                    ".equals (checkedProductDirectories)");
+        } else {
+
+            //они равны, значи нужно выполнить эти пункты:
+
+            //1)список директорий с которыми нужно убрать связть
+            //это
+            //директории которые есть в productFromDBDirectories
+            //но нет в checkedProductDirectories
+            final Set<LinkedDirectory> directoriesToDislink =
+                    Sets.difference(productFromDBDirectories, checkedProductDirectories);
+
+            //убрать связи товара и ненужных директорий
+
+            //2)Убрать связи productFromDb
+            // с не нужными директориями directoriesToDislink
+            dislinkDirectoriesFromProduct (directoriesToDislink, productFromDb);
+
+            //сохранить товар в БД
+            productRepo.save (productFromDb);
+
+            //3)Убрать связи directoriesToDislink
+            // с товаром productFromDb
+            dislinkProductFromDirectories (productFromDb, directoriesToDislink);
+
+
+            //4)сохранить директории directoriesToDislink в БД
+            directoriesToDislink
+                    .forEach (directory ->directoryService.update (directory));
+
+
+            //убрать связи с директорий
+
+            //5)Убрать связи productFromDBDirectories
+            // с не нужными директориями directoriesToDislink
+
+            //выделяем только те директории которые могу поддаваться связи
+
+            //условие при котором тип директории подходит чтобы ее добавить к другим директориям
+            final Predicate<LinkedDirectory> PredicateForAddDirectoryToDirectory =
+                    getPredicateForAddDirectoryToOtherDirectory ();
+
+            //список директорий productFromDBDirectories
+            // которые выполняют условие PredicateForAddDirectoryToDirectory
+            final Set<LinkedDirectory> checkedProductFromDBDirectories =
+                    checkDirectories (productFromDBDirectories, predicateForAddDirectoryToProduct);
+
+            //список директорий directoriesToDislink
+            // которые выполняют условие PredicateForAddDirectoryToDirectory
+            final Set<LinkedDirectory> checkedDirectoriesToDislink =
+                    checkDirectories (directoriesToDislink, predicateForAddDirectoryToProduct);
+
+            //удалить связть директорий - checkedProductFromDBDirectories
+            // со список директорий с которыми нужно
+            // убрать связть -  checkedDirectoriesToDislink
+            // не смотря на то что их может связывать productFromDb
+            dislinkDirectoriesButProduct(checkedProductFromDBDirectories, checkedDirectoriesToDislink, productFromDb);
+
+            //6) сохранить директории checkedDirectoriesToDislink в БД
+            checkedDirectoriesToDislink
+                    .forEach (directory ->directoryService.update (directory));
+
+            //7) сохранить директории checkedProductFromDBDirectories в БД
+            checkedProductFromDBDirectories
+                    .forEach (directory ->directoryService.update (directory));
+
+
+            //8) список директорий checkedProductFromDBDirectories без checkedDirectoriesToDislink
+            final Set<LinkedDirectory> neededCheckedProductFromDBDirectories =
+                    Sets.difference(checkedProductFromDBDirectories, checkedDirectoriesToDislink);
+
+
+            //связать товар с новыми директориями
+
+            //9) список директорий с которыми нужно связать товар productFromDb
+            final Set<LinkedDirectory> directoriesToAddToProduct =
+                    Sets.difference(checkedProductDirectories, productFromDBDirectories);
+
+            //10) связать товар productFromDb с directoriesToAddToProduct
+            directoryService
+                    .addDirectoriesToProduct1(directoriesToAddToProduct, productFromDb);
+
+            //11) сохранить товар в БД
+            productRepo.save (productFromDb);
+
+
+            //12) сохранить директории directoriesToAddToProduct в БД
+            directoriesToAddToProduct
+                    .forEach (directory ->directoryService.update (directory));
+
+            //связать директории с новыми директориями
+
+            //13) cвязать директории  neededCheckedProductFromDBDirectories
+            //с directoriesToAddToProduct
+
+            //список директорий directoriesToAddToProduct
+            // которые выполняют условие PredicateForAddDirectoryToDirectory
+            final Set<LinkedDirectory> checkedDirectoriesToAddToProduct =
+                    checkDirectories (directoriesToAddToProduct, predicateForAddDirectoryToProduct);
+
+            //проверить что списки директорий которые нужно связать не равны
+            if(checkedDirectoriesToAddToProduct
+                    .equals (neededCheckedProductFromDBDirectories)){
+                //Списки равны, ничего связывать не нужно
+                System.out.println ("checkedDirectoriesToAddToProduct" +
+                        ".equals (neededCheckedProductFromDBDirectories)");
+            } else {
+                //Списки не равны
+
+                //cвязать директории  checkedDirectoriesToAddToProduct
+                //с neededCheckedProductFromDBDirectories
+                //и с checkedDirectoriesToAddToProduct
+                checkedDirectoriesToAddToProduct.forEach (directory -> {
+                    linkingDirectoryToDirectories (
+                            directory, neededCheckedProductFromDBDirectories);
+
+                    linkingDirectoryToDirectories (
+                            directory, checkedDirectoriesToAddToProduct);
+                });
+
+                //cвязать директории  neededCheckedProductFromDBDirectories
+                //с checkedDirectoriesToAddToProduct
+                neededCheckedProductFromDBDirectories.forEach (directory -> {
+                    linkingDirectoryToDirectories (
+                            directory, checkedDirectoriesToAddToProduct);
+                });
+
+                //14) сохранить директории neededCheckedProductFromDBDirectories в БД
+                neededCheckedProductFromDBDirectories
+                        .forEach (directory ->directoryService.update (directory));
+
+                //15) сохранить директории checkedDirectoriesToAddToProduct в БД
+                checkedDirectoriesToAddToProduct
+                        .forEach (directory ->directoryService.update (directory));
+
+            }
+
+        }
+    }
+
+    /**
+     * убрать связи товара со списком директорий
+     *
+     * @param product товар
+     * @param directories список директорий
+     */
+    public static void dislinkProductFromDirectories (Product product, Set<LinkedDirectory> directories) {
+        directories.forEach (directory -> {
+            //удалить товара с директории
+            directory.deleteProduct (product);
+            directory.setProductsCount ((long) directory.getProducts ().size ());
+        });
+    }
+
+    /**
+     * убрать связи директорий с товаром
+     *
+     * @param directoriesToDislink список директорий
+     * @param product товар
+     */
+    public static void dislinkDirectoriesFromProduct (Set<LinkedDirectory> directoriesToDislink, Product product) {
+        directoriesToDislink.forEach (directoryToDislink -> {
+            //убрать связи директориb с товара
+            product.deleteDirectory (directoryToDislink);
+        });
+    }
+
+
+    public void updateInfoAboutProduct (Product product, Product productFromDb) {
+        //обновить информацию о товаре
+
+
+        //установить имя товара
+        productFromDb.setProductName (product.getProductName ());
+        //установить описание товара
+        productFromDb.setProductDiscription (product.getProductDiscription ());
+
+        //сохранить товар в БД
+        productRepo.save (productFromDb);
     }
 
     /**
